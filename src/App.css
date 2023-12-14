@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dropdown{
+    min-width: 200px;
+    position: absolute;
+    z-index: 100;
+    top:6.5rem;
+    right: 6rem;
+    background-color: rgb(219, 181, 255);
+    border-radius: 10px 10px 10px 10px;
+    overflow: hidden;
+    transition: 0.2s ease;
+}
+
+.dropdown.active{
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+.dropdown.inactive{
+    visibility: none;
+    transform: translateY(-30px);
+    opacity: 0;
+}
