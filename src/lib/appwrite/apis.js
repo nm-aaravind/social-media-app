@@ -82,3 +82,10 @@ export async function getEmailFromUsername(username){
         
     }
 }
+export async function createPost(){
+    try {
+        
+    } catch (error) {
+        console.log(error)
+    }
+}

@@ -4,8 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import SignInForm from './auth/form/SignInForm'
 import SignUpForm from './auth/form/SignUpForm'
 import AuthLayout from './auth/AuthLayout'
-import Home from './root/pages/Home'
-import RootLayout from './root/RootLayout'
+import { RootLayout,Home, Explore, Saved, CreatePost, UpdatePost, UpdateProfile, Profile, Users } from './root/index'
 
 
 function App() {
@@ -18,6 +17,13 @@ function App() {
                 </Route>
                 <Route element={<RootLayout />}>
                     <Route index element={<Home />} />
+                    <Route path='/explore' element={<Explore />} />
+                    <Route path='/saved' element={<Saved />} />
+                    <Route path='/create-post' element={<CreatePost />} />
+                    {/* <Route path='/users' element={<Users />} /> */}
+                    <Route path='/update-post/:id' element={<UpdatePost />} />
+                    <Route path='/profile' element={<Profile />} />
+                    <Route path='/update-profile/:id' element={<UpdateProfile />} />
                 </Route>
             </Routes>
         </main>
