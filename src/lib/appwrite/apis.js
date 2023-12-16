@@ -1,5 +1,5 @@
 import { ID } from "appwrite";
-import { config, avatars, account, databases } from "./config";
+import { config, avatars, account, databases, storage } from "./config";
 import { Query } from "appwrite";
 export async function createAccount(user) {
     
@@ -82,10 +82,26 @@ export async function getEmailFromUsername(username){
         
     }
 }
-export async function createPost(){
+export async function createPost(data){
     try {
-        
+        console.log(data, "inside create post")
+        const uploadedFile = await uploadFileToStorage(data.images[0])
     } catch (error) {
         console.log(error)
+    }
+}
+
+export async function uploadFileToStorage(file){
+    try {
+        const uploadedFiles = await storage.createFile(
+            config.storageId,
+            ID.unique(),
+            file
+        )
+        console.log("Hey")
+        return uploadedFiles;
+    } catch (error) {
+        console.log(error)
+        throw Error
     }
 }

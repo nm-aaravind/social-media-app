@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import UserContext from '../context/userContext'
 import { useSignOut } from '../lib/react-query/queries'
 function Navbar() {
-  const { userDetails, isAuthenticated, setIsAuthenticated } = useContext(UserContext)
+  const { userDetails } = useContext(UserContext)
   const { mutate: signOut, isSuccess } = useSignOut()
   const navigate = useNavigate()
   useEffect(() => {
@@ -17,7 +17,7 @@ function Navbar() {
   const [dropDownState, setDropDownState] = React.useState(false)
 
   return (
-    <section className='w-full bg-[#DBB5FF] sticky top-0 drop-shadow-3xl'>
+    <section className='w-full bg-[#DBB5FF] z-30 sticky top-0 drop-shadow-3xl'>
       <nav className='p-4 sm:w-[87%] m-auto flex justify-between items-center'>
         <Typography variant='h2' component='h1' color='purple'>
           <Link to={'/'}>Heyo</Link>
