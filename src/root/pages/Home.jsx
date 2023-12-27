@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useGetRecentPosts } from '../../lib/react-query/queries'
 import Loader from '../../components/Loader'
 import Postcard from '../../components/Postcard'
-
+import { useGetSaves } from '../../lib/react-query/queries'
+import UserContext from '../../context/userContext'
 function Home() {
   const { data: posts, isPending } = useGetRecentPosts()
   return (

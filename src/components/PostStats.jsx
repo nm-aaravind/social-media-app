@@ -8,14 +8,12 @@ import { useGetUser, useLikePost, useRemoveSavedPost, useSavePost } from '../lib
 function PostStats({ post, userId }) {
     const likesList = post.likes.map((user) => user.$id);
     const { mutateAsync: likePost } = useLikePost()
-    const { mutate: savePost, isPending: savePending } = useSavePost();
+    const { mutateAsync: savePost, isPending: savePending } = useSavePost();
     const { mutate: removeSave, isPending: removeSavePending } = useRemoveSavedPost()
-    console.log("Rerender")
     const { data:user } = useGetUser();
     const saveState = user?.save.find((element) => element.post.$id === post.$id)
     const [likes, setLikes] = useState(likesList)
     const [isSaved, setIsSaved] = useState(false)
-    
     async function toggleLike(event) {
         event.stopPropagation();
 
@@ -44,8 +42,8 @@ function PostStats({ post, userId }) {
             setIsSaved(false)
         }
         else{
-            savePost({ postId: post.$id, userId })
             setIsSaved(true)
+            const savedPost = await savePost({ postId: post.$id, userId })
         }
 
     }

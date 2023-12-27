@@ -56,6 +56,19 @@ export async function signOut(){
     }
 }
 
+export async function getSaves(userId){
+    try {
+        const userSaves = await databases.listDocuments(
+            config.databaseId,
+            config.usersCollection,
+            [Query.equal('accountid', userId)]
+        )
+        return userSaves.documents
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export async function getUser(){
     try {
         const currentAccount = await account.get()
@@ -176,7 +189,6 @@ export async function likePost(likeArray, postId){
                 Permission.update(Role.any())
             ]
         )
-        console.log("Result of DB update:",likedPost.likes)
         if(!likedPost){
             throw Error
         }
@@ -186,9 +198,9 @@ export async function likePost(likeArray, postId){
     }
 }
 
-export function savePost(postId, userId){
+export async function savePost(postId, userId){
     try {
-        const savedPost = databases.createDocument(config.databaseId,
+        const savedPost = await databases.createDocument(config.databaseId,
             config.savesCollection,
             ID.unique(),
             {
@@ -199,22 +211,20 @@ export function savePost(postId, userId){
         if(!savedPost){
             throw Error
         }
-        console.log("Save panniyachu")
         return savedPost
     } catch (error) {
         console.log(error)
     }
 }
 
-export function removeSavedPost(savedPostId){
+export async function removeSavedPost(savedPostId){
     try {
-        const status = databases.deleteDocument(
+        const status = await databases.deleteDocument(
             config.databaseId,
             config.savesCollection,
             savedPostId
         )
         if(!status) throw Error
-        console.log("DOME")
         return {status: 'ok'}
     } catch (error) {
         console.log(error)

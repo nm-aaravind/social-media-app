@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useGetUser } from '../lib/react-query/queries'
 import PostStats from './PostStats'
-function Postcard({ post }) {
+function Postcard({ post, saves }) {
     const { data: user} = useGetUser();
     return (
         <div className='bg-violet-300 border border-violet-300 w-[max(1rem,800px)] sm:h-[600px] md:h-[850px] rounded-xl overflow-hidden '>
@@ -17,7 +17,7 @@ function Postcard({ post }) {
             <div className=''>
                 <img src={post.image} className='h-[655px] w-full'></img>
             </div>
-            <PostStats post={post} userId={user?.$id}/>
+            <PostStats post={post} userId={user?.$id} saves={saves}/>
         </div>
     )
 }
