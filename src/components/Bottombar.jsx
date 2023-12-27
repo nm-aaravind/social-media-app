@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa6";
 import { MdSaveAlt } from "react-icons/md";
 function Bottombar() {
   return (
-    <div className='w-full drop-shadow-3xl-inverted h-20 sticky bottom-0 flex justify-around z-40 border-t-4 bg-[#DBB5FF] border-purple-400 border-opacity-50'>
+    <div className='w-full drop-shadow-3xl-inverted h-20 fixed bottom-0 flex justify-around z-40 border-t-4 bg-[#DBB5FF] border-purple-400 border-opacity-50'>
       <NavLink
         to="/"
         className={({ isActive, isPending }) =>

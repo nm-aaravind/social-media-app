@@ -86,6 +86,64 @@ export async function createPost(data){
     try {
         console.log(data, "inside create post")
         const uploadedFile = await uploadFileToStorage(data.images[0])
+        if(!uploadedFile){
+            throw Error("Error uploading to storage")
+        }
+        const filePreview = getFilePreview(uploadedFile.$id)
+        if(!filePreview){
+            deleteFile(uploadedFile.$id)
+            throw Error
+        }
+        const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
+
+        const createdPost = await databases.createDocument(
+            config.databaseId,
+            config.postsCollection,
+            ID.unique(),
+            {
+                user: data.user,
+                caption: data.caption,
+                tags: tags,
+                image: data.images[0],
+                imageId: uploadedFile.$id,
+                location: data.location
+            }
+        )
+
+        if(!createdPost){
+            deleteFile(uploadedFile.$id)
+            throw Error
+        }
+        return createdPost;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function deleteFile(fileId){
+    try {
+        await storage.deleteFile(config.storageId, fileId)
+        return { status: 'ok' }
+    } catch (error) {
+        console.log(error)
+    }
+}
+export async function getRecentPosts(){
+    try {
+        const recentPosts = await databases.listDocuments(config.databaseId,config.postsCollection,[Query.orderDesc('$createdAt', Query.limit(40))]);
+        if(!recentPosts){
+            throw Error
+        }
+        return recentPosts
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function getFilePreview(fileId){
+    try {
+        const filePreview = storage.getFilePreview(config.storageId, fileId, 1000,1000,"center", 50)
+        return filePreview
     } catch (error) {
         console.log(error)
     }

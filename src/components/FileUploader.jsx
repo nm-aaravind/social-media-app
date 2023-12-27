@@ -37,7 +37,12 @@ function FileUploader(props) {
     }, []);
 
     useEffect(() => {
-        register(name)
+        register(name, {
+            required: {
+                value: true,
+                message: "Image required"
+            }
+        })
         return () => {
           unregister(name)
         }

@@ -5,6 +5,7 @@ import { multiFormatDateString } from '../lib/utils'
 import UserContext from '../context/userContext'
 import { FaRegHeart } from "react-icons/fa6";
 import { FaRegComment } from "react-icons/fa";
+import PostStats from './PostStats'
 function Postcard({ post }) {
     const {userDetails} = useContext(UserContext)
     return (
@@ -19,14 +20,7 @@ function Postcard({ post }) {
             <div className=''>
                 <img src={post.image} className='h-[655px] w-full'></img>
             </div>
-            <div className='h-24 flex flex-col mx-4 text-ellipsis'>
-                <div className='flex gap-4'>
-                <Link><FaRegHeart /></Link>
-                <Link><FaRegComment /></Link>
-                </div>
-                <p className='text-ellipsis overflow-hidden whitespace-nowrap'><span className='font-semibold '>{post.user.name}</span> {post.caption}</p>
-                <span className=''>{multiFormatDateString(post.$createdAt)} Remove this</span>
-            </div>
+            <PostStats post={post} />
         </div>
     )
 }
