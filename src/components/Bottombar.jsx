@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { GrHomeRounded } from "react-icons/gr";
 import { IoMdSearch } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
-import { MdSaveAlt } from "react-icons/md";
+import { RiBookmark3Line } from "react-icons/ri";
 function Bottombar() {
   return (
     <div className='w-full drop-shadow-3xl-inverted h-20 fixed bottom-0 flex justify-around z-40 border-t-4 bg-[#DBB5FF] border-purple-400 border-opacity-50'>
@@ -37,7 +37,7 @@ function Bottombar() {
           isPending ? "pending" : isActive ? "bottom-active w-full flex items-center " : "w-full flex items-center hover:bg-[#ce9eff]"
         }
       >
-        <MdSaveAlt className='text-[#800080] sm:w-8 sm:h-8 lg:w-11 lg:h-11 m-auto' />
+        <RiBookmark3Line className='text-[#800080] sm:w-8 sm:h-8 lg:w-11 lg:h-11 m-auto' />
       </NavLink>
     </div>
   )

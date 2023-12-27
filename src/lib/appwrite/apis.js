@@ -1,6 +1,6 @@
 import { ID } from "appwrite";
 import { config, avatars, account, databases, storage } from "./config";
-import { Query } from "appwrite";
+import { Query, Permission, Role } from "appwrite";
 export async function createAccount(user) {
     
     try {
@@ -161,5 +161,62 @@ export async function uploadFileToStorage(file){
     } catch (error) {
         console.log(error)
         throw Error
+    }
+}
+
+export async function likePost(likeArray, postId){
+    try {
+        console.log("receing this", likeArray)
+        const likedPost = await databases.updateDocument(config.databaseId,
+            config.postsCollection,
+            postId,
+            {
+                likes: likeArray
+            },[
+                Permission.update(Role.any())
+            ]
+        )
+        console.log("Result of DB update:",likedPost.likes)
+        if(!likedPost){
+            throw Error
+        }
+        return likedPost
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export function savePost(postId, userId){
+    try {
+        const savedPost = databases.createDocument(config.databaseId,
+            config.savesCollection,
+            ID.unique(),
+            {
+                users: userId,
+                post: postId
+            }
+        )
+        if(!savedPost){
+            throw Error
+        }
+        console.log("Save panniyachu")
+        return savedPost
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export function removeSavedPost(savedPostId){
+    try {
+        const status = databases.deleteDocument(
+            config.databaseId,
+            config.savesCollection,
+            savedPostId
+        )
+        if(!status) throw Error
+        console.log("DOME")
+        return {status: 'ok'}
+    } catch (error) {
+        console.log(error)
     }
 }

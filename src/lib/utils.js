@@ -43,3 +43,7 @@ export function formatDateString(dateString) {
         return "Just now";
     }
   };
+
+  export const checkIsLiked = (likesList, userId) => {
+    return likesList.includes(userId);
+  };

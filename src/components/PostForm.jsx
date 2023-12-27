@@ -20,6 +20,10 @@ function PostForm({ post }) {
 
     async function formSubmit(data){
         const createdPost = await createPost({...data, ...userDetails})
+        if(!createdPost){
+            throw Error
+        }
+        navigate('/')
     }
     return (
         <FormProvider {...methods}>
