@@ -197,6 +197,19 @@ export async function likePost(likeArray, postId){
         console.log(error)
     }
 }
+export async function getPostById(id){
+    try {
+        console.log(id, "Mapula")
+        const post = await databases.listDocuments(
+            config.databaseId,
+            config.postsCollection,
+            [Query.equal('$id', id)]
+        )
+        return post.documents[0]
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 export async function savePost(postId, userId){
     try {

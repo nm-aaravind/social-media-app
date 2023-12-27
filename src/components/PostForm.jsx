@@ -6,6 +6,7 @@ import { useCreatePost } from '../lib/react-query/queries'
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/userContext'
 function PostForm({ post }) {
+    console.log(post, "DEIIIIIIII")
     const {mutateAsync: createPost, isPending: isLoading } = useCreatePost()
     const { userDetails } = useContext(UserContext)
     const navigate = useNavigate()
