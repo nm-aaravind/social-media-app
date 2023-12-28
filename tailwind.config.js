@@ -7,9 +7,10 @@ export default {
   theme: {
     extend: {
       dropShadow: {
-        'form': ['0 10px 8px rgb(156,39,176/0.04)', '0 4px 3px rgb(156,39,176/0.04)'],
-          '3xl': '0px 10px 5px rgba(0,0,0, 0.3)',
-          '3xl-inverted': '0px -5px 5px rgba(0,0,0, 0.3)',
+        'form': '5px 10px 5px rgba(0,0,0,0.8)',
+          '3xl': '0px 10px 5px rgba(0,0,0,0.8)',
+          '3xl-inverted': '0px -10px 5px rgba(0,0,0, 0.8)',
+          'form-field': '0px 5px 5px rgba(0,0,0,0.5)'
       },
       fontFamily: {
         'varela': ['Varela Round', 'sans-serif']

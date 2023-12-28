@@ -3,6 +3,7 @@ import { FaRegHeart, FaHeart, FaRegComment } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { multiFormatDateString, checkIsLiked } from '../lib/utils'
 import { RiBookmark3Line, RiBookmark3Fill } from "react-icons/ri";
+import { Box } from '@mui/material';
 import { useGetUser, useLikePost, useRemoveSavedPost, useSavePost } from '../lib/react-query/queries';
 
 function PostStats({ post, userId }) {
@@ -48,25 +49,27 @@ function PostStats({ post, userId }) {
 
     }
     return (
-        <div className='h-24 flex flex-col mx-4 text-ellipsis'>
-            <div className='flex gap-4'>
+        <Box borderTop='1px solid #fff2' bgcolor='primary.light' className='flex flex-col text-ellipsis px-5 pt-3 sm:h-28 md:h-32 lg:h-36'>
+            <div className='flex gap-6'>
                 <button className='' onClick={toggleLike}>
                     {
-                        checkIsLiked(likes, userId) ? <FaHeart className='text-red-600' /> :
-                        <FaRegHeart />
+                        checkIsLiked(likes, userId) ? <FaHeart className='text-red-600  w-8 h-7' /> :
+                        <FaRegHeart className='w-8 h-7'/>
                     }
                 </button>
-                <Link><FaRegComment /></Link>
-                <button className='' onClick={toggleSave}>
+                <button>
+                    <FaRegComment className='w-8 h-7'/>
+                </button>
+                <button className='ml-auto mr-2' onClick={toggleSave}>
                     {
-                        savePending || removeSavePending ? <p>Saving</p> : isSaved ? <RiBookmark3Fill className='text-red-600' /> :
-                        <RiBookmark3Line />
+                        savePending || removeSavePending ? <p>Saving</p> : isSaved ? <RiBookmark3Fill className='w-8 h-7' /> :
+                        <RiBookmark3Line className='w-8 h-7'/>
                     }
                 </button>
             </div>
-            <p className='text-ellipsis overflow-hidden whitespace-nowrap'><span className='font-semibold '>{post.user.name}</span> {post.caption}</p>
-            <span className=''>{multiFormatDateString(post.$createdAt)}</span>
-        </div>
+            <p className='text-ellipsis text-lg font-varela overflow-hidden mt-1 whitespace-nowrap md:text-lg lg:text-xl'><span className='font-semibold '>{post.user.username}</span> {post.caption}</p>
+            <span className='font-semibold sm:text-md lg:text-lg font-varela text-black/80 mt-1'>{multiFormatDateString(post.$createdAt)}</span>
+        </Box>
     )
 }
 

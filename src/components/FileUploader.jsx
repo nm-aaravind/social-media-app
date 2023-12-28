@@ -5,15 +5,14 @@ import { Paper, Typography } from '@mui/material';
 import { Divider } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 
-function FileUploader(props) {
+function FileUploader({ name, mode, image }) {
     const {
         register,
         unregister,
         setValue,
         watch,
     } = useFormContext()
-    const { name } = props
-    const files = watch(name)
+    const file = watch(name)
     const onDrop = useCallback(acceptedFiles => {
         if (acceptedFiles?.length) {
             setValue(name, acceptedFiles)
@@ -25,15 +24,8 @@ function FileUploader(props) {
             'image/png': ['.png', '.jpg', '.jpeg'],
         }
     })
-
-    function removeFile(file) {
-        let newFiles = [...files]
-        newFiles.splice(newFiles.indexOf(file), 1)
-        setValue(name, newFiles)
-    }
-
     useEffect(() => {
-        return () => files?.forEach(file => URL.revokeObjectURL(file.preview));
+        return () => URL.revokeObjectURL(file)
     }, []);
 
     useEffect(() => {
@@ -44,44 +36,50 @@ function FileUploader(props) {
             }
         })
         return () => {
-          unregister(name)
+            unregister(name)
         }
-      }, [register, unregister, name])
+    }, [register, unregister, name])
 
     return (
         <div className='p-4'>
             <Paper elevation={1} sx={{
                 backgroundColor: '#F1F5F9', borderColor: 'darkgray', borderWidth: '0.5px', ":hover": {
                     borderColor: 'black'
-                }
+                },
             }}>
                 <div {...getRootProps({
-                    className: 'text-[#800080] w-full h-72 font-varela px-3 cursor-pointer grid place-content-center text-2xl'
+                    className: 'text-[#800080] w-full border border-black font-varela px-3 cursor-pointer grid place-content-center text-2xl'
                 })}>
-                    <input {...getInputProps()} id='images'/>
-                    <FaPhotoVideo className='text-[#800080] m-auto w-24 h-24 mb-4' />
+                    <input {...getInputProps({
+                        className: 'border border-red-100 bg-black'
+                    })} id='images'/>
                     {
-                        isDragActive ?
-                            <p>Drop images here</p> :
-                            <p>Drag and drop, or click to select images</p>
+                        mode == 'update' ? <div className='h-full w-full bg-black'>
+                            <img src={image} className='w-full'></img>
+                        </div> 
+                        : 
+                        file?.length ? <div className='w-full h-full'>
+                        <img src={URL.createObjectURL(file[0])} className='w-full'></img>
+                        </div> 
+                        : 
+                        <div className='bg-black max-h-full max-w-full'>
+                            <FaPhotoVideo className='text-[#800080] m-auto w-24 h-24 mb-4' />
+                            {
+                                isDragActive ?
+                                <p>Drop images here</p> :
+                                <p>Drag and drop, or click to select images</p>
+                            }
+                        </div>
                     }
+                    <p>Click on the picture to choose another picture</p>
                 </div>
+                <button onClick={() => {
+                    setValue(name, [])
+                }}>Reset</button>
             </Paper>
-            {files?.length > 0 && <div className='flex flex-col rounded-lg bg-purple-500/40 mt-4'>
-                <Typography variant='h4' component={'p'} color={'purple'} align='center' marginTop={'10px'}>Preview</Typography>
-                <Divider style={{ backgroundColor: 'whitesmoke', height: '4px', width: '100%' }} />
-                <aside className='flex items-center flex-wrap gap-3 p-4'>
-                    {files.map(file =>
-                        <li key={file.preview} className='flex flex-col list-none w-[13.5rem]'>
-                            <img className='rounded-t-lg hover:opacity-70 transition-opacity' alt={file.name} src={URL.createObjectURL(file)}></img>
-                            <button className='text-center rounded-b-lg font-varela text-xl p-2 text-slate-100 bg-red-600 hover:bg-red-700' onClick={(file) => removeFile(file)}>Remove</button>
-                        </li>
-                    )}
-                </aside>
-            </div>}
-
+            
         </div>
     )
 }
 
-export default memo(FileUploader)
+export default FileUploader

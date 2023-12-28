@@ -98,7 +98,7 @@ export async function getEmailFromUsername(username){
 export async function createPost(data){
     try {
         console.log(data, "inside create post")
-        const uploadedFile = await uploadFileToStorage(data.images[0])
+        const uploadedFile = await uploadFileToStorage(data.file[0])
         if(!uploadedFile){
             throw Error("Error uploading to storage")
         }
@@ -108,16 +108,16 @@ export async function createPost(data){
             throw Error
         }
         const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
-
+        console.log(data.user, "Inside create post for user")
         const createdPost = await databases.createDocument(
             config.databaseId,
             config.postsCollection,
             ID.unique(),
             {
-                user: data.user,
+                user: data.user.accountid,
                 caption: data.caption,
                 tags: tags,
-                image: data.images[0],
+                image: filePreview,
                 imageId: uploadedFile.$id,
                 location: data.location
             }
@@ -147,7 +147,7 @@ export async function getRecentPosts(){
         if(!recentPosts){
             throw Error
         }
-        return recentPosts
+        return recentPosts.documents
     } catch (error) {
         console.log(error)
     }
@@ -155,7 +155,7 @@ export async function getRecentPosts(){
 
 function getFilePreview(fileId){
     try {
-        const filePreview = storage.getFilePreview(config.storageId, fileId, 1000,1000,"center", 50)
+        const filePreview = storage.getFilePreview(config.storageId, fileId, 1000,1000)
         return filePreview
     } catch (error) {
         console.log(error)

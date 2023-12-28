@@ -12,6 +12,15 @@ const theme = createTheme({
     typography: {
         fontFamily: "'Varela Round', sans-serif",
     },
+    palette: {
+        primary:{
+            main : '#161616',
+            light : '#272727',
+        },
+        secondary:{
+            main: '#ebe8e8'
+        }
+    }
 
 })
 const root = ReactDOM.createRoot(document.getElementById('root'));

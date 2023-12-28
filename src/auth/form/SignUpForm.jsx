@@ -49,14 +49,11 @@ function SignUpForm() {
   }
   return (
     <>
-      <Box component="div" className="flex drop-shadow-form flex-col h-fit sm:w-[min(65%,600px)] lg:w-[min(50%,600px)] xl:w-[min(50%,600px)] items-center m-auto md:bg-purple-500/40 rounded-md">
-        <Typography variant='h2' component='h1' color='purple' paddingY='20px' >
-          <Link to={'/'}>Heyo</Link>
-        </Typography>
-        
-        <Typography variant='h3' component='h2' color='purple' marginY='35px'>Sign Up</Typography>
+      <Box border='1px solid #fff2' bgcolor='primary.light' component="div" className=" flex drop-shadow-form flex-col h-fit sm:w-[min(65%,600px)] lg:w-[min(50%,600px)] xl:w-[min(50%,600px)] items-center m-auto">
+        <Typography variant='h3' component='h2' color='whitesmoke' marginY='35px'>Sign Up</Typography>
+        <Divider style={{ backgroundColor: '#fff4', height: '1px', width: '100%', marginBottom: '45px' }} />
         <form method='post' onSubmit={handleSubmit(formSubmit)} className='flex flex-col w-3/4 m-auto self-center'>
-          <Paper elevation={1} sx={{ marginBottom: "45px" }}>
+          <Paper elevation={1} sx={{marginBottom:"40px", backgroundColor: "#494949" }}>
             <TextField {...register('name', {
               required: {
                 value: true,
@@ -66,11 +63,11 @@ function SignUpForm() {
                 value: 70,
                 message: "70 characters max"
               }
-            })} name='name' id="name" label="Name" autoComplete='off' variant="filled" color='secondary' fullWidth autoFocus inputProps={{ style: { fontSize: 22 } }}
-              InputLabelProps={{ style: { fontSize: 20, color: 'purple' } }} />
+            })} name='name' id="name" label="Name" autoComplete='off' variant="filled" color='secondary' fullWidth autoFocus inputProps={{ style: { fontSize: 22, color:'whitesmoke' } }}
+              InputLabelProps={{ style: { fontSize: 20, color: '#ebe8e8aa' } }} />
           </Paper>
-          {errors.name && <Typography variant='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"}>{errors.name?.message}</Typography>}
-          <Paper elevation={1} sx={{ marginBottom: "40px" }}>
+          {errors.name && <Typography variant='h6' component='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"}>{errors.name?.message}</Typography>}
+          <Paper elevation={1} sx={{marginBottom:"40px", backgroundColor: "#494949" }}>
             <TextField {...register('username', {
               required: {
                 value: true,
@@ -84,11 +81,11 @@ function SignUpForm() {
                 value: /^[a-zA-Z0-9_]*$/,
                 message: "Use only alphabets, numbers and underscores"
               }
-            })} name='username' id="username" label="Username" autoComplete='off' variant="filled" color='secondary' fullWidth inputProps={{ style: { fontSize: 23, margin: 'auto' } }}
-              InputLabelProps={{ style: { fontSize: 20, color: 'purple' } }} />
+            })} name='username' id="username" label="Username" autoComplete='off' variant="filled" color='secondary' fullWidth inputProps={{ style: { fontSize: 23, margin: 'auto', color:'whitesmoke' } }}
+              InputLabelProps={{ style: { fontSize: 20, color: '#ebe8e8aa' } }} />
           </Paper>
-          {errors.username && <Typography variant='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"}>{errors.username?.message}</Typography>}
-          <Paper elevation={1} sx={{ marginBottom: "40px" }}>
+          {errors.username && <Typography variant='h6' component='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"}>{errors.username?.message}</Typography>}
+          <Paper elevation={1} sx={{marginBottom:"40px", backgroundColor: "#494949" }}>
             <TextField {...register('email', {
               pattern: {
                 value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
@@ -98,13 +95,13 @@ function SignUpForm() {
                 value: true,
                 message: "Email id required"
               }
-            })} name='email' id="email" label="Email Id" autoComplete='off' variant="filled" color='secondary' fullWidth inputProps={{ style: { fontSize: 23, margin: 'auto' } }}
-              InputLabelProps={{ style: { fontSize: 20, color: 'purple' } }} />
+            })} name='email' id="email" label="Email Id" autoComplete='off' variant="filled" color='secondary' fullWidth inputProps={{ style: { fontSize: 23, margin: 'auto', color:'whitesmoke' } }}
+              InputLabelProps={{ style: { fontSize: 20, color: '#ebe8e8aa' } }} />
           </Paper>
-          {errors.email && <Typography variant='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"} >{errors.email?.message}</Typography>}
-          <Paper elevation={1} sx={{ marginBottom: "45px" }}>
+          {errors.email && <Typography variant='h6' component='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"} >{errors.email?.message}</Typography>}
+          <Paper elevation={1} sx={{marginBottom:"40px", backgroundColor: "#494949" }}>
             <FormControl variant="filled" color='secondary' fullWidth>
-              <InputLabel htmlFor="outlined-adornment-password" sx={{ fontSize: 20, color: 'purple' }}>Password</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-password" sx={{ fontSize: 20, color: '#ebe8e8aa' }}>Password</InputLabel>
               <FilledInput
                 {...register('password', {
                   required: {
@@ -138,15 +135,15 @@ function SignUpForm() {
                   </InputAdornment>
                 }
                 label="Password"
-                inputProps={{ style: { fontSize: 23, margin: 'auto' } }} // font size of input text
+                inputProps={{ style: { fontSize: 23, margin: 'auto', color:'#ebe8e8' } }} // font size of input text
               />
             </FormControl>
           </Paper>
-          {errors.password && <Typography variant='p' fontFamily={"Varela Round"} color='red' marginTop={"-35px"} marginBottom={"11px"}>{errors.password?.message}</Typography>}
-          <Button type='submit' variant="contained" color='secondary' sx={{ fontSize: '18px', height: '48px' }}>Sign Up</Button>
+          {errors.password && <Typography variant='h6' component='p' fontFamily={"Varela Round"} color='red' marginTop={"-35px"} marginBottom={"11px"}>{errors.password?.message}</Typography>}
+          <Button type='submit' variant="outlined" color='secondary' sx={{ fontSize: '18px', height: '49px', borderRadius: 0, boxShadow: '0px 5px 5px rgba(0,0,0,0.5)' , ":hover": { backgroundColor: 'green', border: 'green', color: 'white' } }} className='drop-shadow-form-field'>Sign Up</Button>
         </form>
-        <Typography component='p' fontSize='23px' marginY={'40px'}>
-          Already have an account? <Link className='font-semibold text-[#9c27b0] underline-offset-4 underline' to={'/signin'}>Sign In</Link>
+        <Typography sx={{color:'#ebe8e8aa'}} component='p' fontSize='23px' marginY={'40px'}>
+          Already have an account? <Link className='underline-offset-4 text-white underline' to={'/signin'}>Sign In</Link>
         </Typography>
       </Box>
     </>

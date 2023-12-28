@@ -1,9 +1,25 @@
-import { Typography, Divider } from '@mui/material'
+import { Typography, Divider, AppBar, Menu, MenuItem } from '@mui/material'
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import UserContext from '../context/userContext'
 import { useSignOut } from '../lib/react-query/queries'
+import { styled } from '@mui/system';
+
+const Listbox = styled('ul')(
+  ({ theme }) => `
+  font-family: 'Varela', sans-serif;
+  font-size: 1rem;
+  box-sizing: border-box;
+  min-width: 200px;
+  border-radius: 0px;
+  overflow: auto;
+  box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(255,255,255, 1)'
+    };
+  z-index: 1;
+  `,
+);
+
 function Navbar() {
   const { userDetails } = useContext(UserContext)
   const { mutate: signOut, isSuccess } = useSignOut()
@@ -14,34 +30,53 @@ function Navbar() {
     }
   }, [isSuccess])
 
-  const [dropDownState, setDropDownState] = React.useState(false)
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const open = Boolean(anchorEl)
+
+  const handleDropDown = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleDropDownClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleSignout = () => {
+    signOut();
+    handleDropDownClose();
+  }
 
   return (
-    <section className='w-full bg-[#DBB5FF] z-30 sticky top-0 drop-shadow-3xl'>
-      <nav className='p-4 sm:w-[87%] m-auto flex justify-between items-center'>
-        <Typography variant='h2' component='h1' color='purple'>
+    <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl w-full'>
+      <div className='p-4 sm:w-[87%] m-auto flex justify-between items-center'>
+        <Typography variant='h2' component='h1' color='whitesmoke'>
           <Link to={'/'}>Heyo</Link>
         </Typography>
-        <button className='dropdown-trigger' onClick={() => setDropDownState((state) => !state)}>
-          <img src={userDetails.imageUrl} alt="profile-image" className='w-14 rounded-full ' />
+        <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} transition-transform`} onClick={handleDropDown}>
+          <img src={userDetails.imageUrl} alt="profile-image" className='w-14 rounded-full' />
         </button>
 
-
-        <div className={`dropdown bg-[#DBB5FF] ${dropDownState ? 'open':'closed'}`}>
-
-          <Typography align='center' className='pt-3 bg-[#]' variant='h6' color={'whitesmoke'} component='p' fontFamily={'Varela Round'}>Hey</Typography>
-
-          <Typography align='center' className='p-5 pt-0' variant='h5' color={'purple'} component='p' fontFamily={'Varela Round'}>{userDetails.name}!</Typography>
-
-          <Divider style={{ backgroundColor: 'whitesmoke', height: '4px', width: '100%' }} />
-
-          <Typography textAlign={'center'} color={'purple'} paddingTop={'1.25rem'} paddingBottom={"1.25rem"} variant='h6' component='p' className='cursor-pointer bg-[#DBB5FF] hover:bg-purple-500/40 ' fontFamily={'Varela Round'}><Link to={`profile/${userDetails.accountid}`}>Profile</Link></Typography>
-
-          <button className='font-varela bg-[#DBB5FF] rounded-b-sm text-center text-red-600 w-full hover:bg-purple-500/40 text-lg p-5' onClick={() => signOut()}>Sign Out</button>
-
-        </div>
-      </nav>
-    </section>
+        <Menu PaperProps={{
+          style: {
+            backgroundColor: '#232323', // Set your desired grey background color here
+            marginTop: '1.2rem',
+            translate: '-29%',
+            border: '3px solid #ebebeb33',
+            offset: '10px',
+            color: '#ebebeb',
+            borderRadius: '0px',
+            minWidth: '200px',
+            boxShadow: '0px 10px 5px rgba(0,0,0,0.6)'
+            // Set your desired margin value here
+          },
+        }} anchorEl={anchorEl} open={open} onClose={handleDropDownClose} slots={{ listbox: Listbox }}>
+          <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', height: '4rem' }} onClick={() => {
+            navigate(`profile/${userDetails.accountid}`)
+            handleDropDownClose()
+          }}><p className='text-center  w-full'>Profile</p></MenuItem>
+          <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', color: '#f73123', height: '4rem' }} onClick={handleSignout}><p className='text-center w-full'>Log out</p></MenuItem>
+        </Menu>
+      </div>
+    </AppBar>
   )
 }
 

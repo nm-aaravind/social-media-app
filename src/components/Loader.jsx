@@ -4,16 +4,18 @@ import { Typography } from "@mui/material";
 
 function Loader({ message }) {
     return (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+        <div className="loader w-full overflow-hidden grid place-content-center">
+            <div className="w-full place-content-center flex flex-col items-center">
             <MutatingDots
-                height="120"
-                width="120"
-                color="#50107d"
-                secondaryColor="#8e1be0"
+                height="100"
+                width="100"
+                color="#ebe8e8"
+                secondaryColor="#606060"
                 radius="15"
                 ariaLabel="mutating-dots-loading"
             />
-            <Typography variant="h5" component={'p'} color={'purple'} align="center">{message}</Typography>
+            <Typography variant="h5" component={'p'} color={'whitesmoke'} align="center">{message}</Typography>
+        </div>
         </div>
     )
 }
