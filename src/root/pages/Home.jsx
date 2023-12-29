@@ -11,7 +11,7 @@ function Home() {
   const { data: user } = useGetUser();
   const [offset] = useOutletContext()
   return (
-    <Box color='primary' className='w-full home-container flex mb-32 mt-16 '>
+    <Box color='primary' className='w-full home-container flex mb-32 mt-56 '>
       <PageHeader offset={offset} heading="Home" />
       {
         isPending || !posts ? <Loader message={"Hold on while we fetch your feed"}/> : <div className='post-container m-auto'>

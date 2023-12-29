@@ -6,7 +6,7 @@ import { RiBookmark3Line, RiBookmark3Fill } from "react-icons/ri";
 import { Box } from '@mui/material';
 import { useGetUser, useLikePost, useRemoveSavedPost, useSavePost } from '../lib/react-query/queries';
 
-function PostStats({ post, userId }) {
+function PostStats({ post, userId, forGrid }) {
     const likesList = post.likes.map((user) => user.$id);
     const { mutateAsync: likePost } = useLikePost()
     const { mutateAsync: savePost, isPending: savePending } = useSavePost();
@@ -17,7 +17,6 @@ function PostStats({ post, userId }) {
     const [isSaved, setIsSaved] = useState(false)
     async function toggleLike(event) {
         event.stopPropagation();
-
         let newLikes = [...likes]
         if(newLikes.includes(userId)){
             newLikes = newLikes.filter((user) => user !== userId
@@ -44,22 +43,24 @@ function PostStats({ post, userId }) {
         }
         else{
             setIsSaved(true)
-            const savedPost = await savePost({ postId: post.$id, userId })
+            await savePost({ postId: post.$id, userId })
         }
 
     }
     return (
-        <Box borderTop='1px solid #fff2' bgcolor='primary.light' className='flex flex-col text-ellipsis px-5 pt-3 sm:h-28 md:h-32 lg:h-36'>
-            <div className='flex gap-6'>
+        <Box borderTop='2px solid #fff8' className={`${forGrid ? 'bg-transparent' : 'bg-[#272727]'} flex flex-col text-ellipsis px-5 pt-3 ${forGrid ? 'h-[5.5rem]' : 'sm:h-28 md:h-32 lg:h-36'}`}>
+            <div className='flex gap-6 text-white'>
                 <button className='' onClick={toggleLike}>
                     {
                         checkIsLiked(likes, userId) ? <FaHeart className='text-red-600  w-8 h-7' /> :
                         <FaRegHeart className='w-8 h-7'/>
                     }
                 </button>
-                <button>
-                    <FaRegComment className='w-8 h-7'/>
-                </button>
+                {
+                    !forGrid && <button>
+                        <FaRegComment className='w-8 h-7'/>
+                    </button>
+                }
                 <button className='ml-auto mr-2' onClick={toggleSave}>
                     {
                         savePending || removeSavePending ? <p>Saving</p> : isSaved ? <RiBookmark3Fill className='w-8 h-7' /> :
@@ -67,8 +68,10 @@ function PostStats({ post, userId }) {
                     }
                 </button>
             </div>
-            <p className='text-ellipsis text-lg font-varela overflow-hidden mt-1 whitespace-nowrap md:text-lg lg:text-xl'><span className='font-semibold '>{post.user.username}</span> {post.caption}</p>
-            <span className='font-semibold sm:text-md lg:text-lg font-varela text-black/80 mt-1'>{multiFormatDateString(post.$createdAt)}</span>
+            <p className='text-white text-ellipsis text-lg font-varela overflow-hidden mt-1 whitespace-nowrap md:text-lg lg:text-xl'><span className=''>{post.user.username}</span> {!forGrid && post.caption}</p>
+            {
+                !forGrid && <span className='text-white sm:text-md lg:text-lg font-varela text-black/80 mt-1'>{multiFormatDateString(post.$createdAt)}</span>
+            }
         </Box>
     )
 }

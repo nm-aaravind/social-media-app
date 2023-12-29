@@ -2,10 +2,10 @@ import { ID } from "appwrite";
 import { config, avatars, account, databases, storage } from "./config";
 import { Query, Permission, Role } from "appwrite";
 export async function createAccount(user) {
-    
+
     try {
         const newAccount = await account.create(ID.unique(), user.email, user.password, user.name)
-        if(!newAccount){
+        if (!newAccount) {
             throw Error
         }
         const profilePic = avatars.getInitials(newAccount.name)
@@ -37,7 +37,7 @@ export async function saveUserToDB(user) {
     }
 }
 
-export async function signIn(user){
+export async function signIn(user) {
     try {
         const session = await account.createEmailSession(user.email, user.password)
         return session;
@@ -46,17 +46,17 @@ export async function signIn(user){
     }
 }
 
-export async function signOut(){
+export async function signOut() {
     try {
         const session = await account.deleteSession("current");
         return session
     } catch (error) {
-       console.log(error)
-       return error 
+        console.log(error)
+        return error
     }
 }
 
-export async function getSaves(userId){
+export async function getSaves(userId) {
     try {
         const userSaves = await databases.listDocuments(
             config.databaseId,
@@ -69,40 +69,40 @@ export async function getSaves(userId){
     }
 }
 
-export async function getUser(){
+export async function getUser() {
     try {
         const currentAccount = await account.get()
         const currentUser = await databases.listDocuments(
             config.databaseId,
             config.usersCollection,
-            [Query.equal('accountid',currentAccount.$id)]
+            [Query.equal('accountid', currentAccount.$id)]
         )
-        if(!currentUser){
-            throw Error 
+        if (!currentUser) {
+            throw Error
         }
         return currentUser.documents[0]
     } catch (error) {
         console.log(error)
     }
 }
-export async function getEmailFromUsername(username){
+export async function getEmailFromUsername(username) {
     try {
         const user = await databases.listDocuments(config.databaseId,
-            config.usersCollection,[
+            config.usersCollection, [
             Query.equal('username', username),
         ])
     } catch (error) {
-        
+
     }
 }
-export async function createPost(data){
+export async function createPost(data) {
     try {
         const uploadedFile = await uploadFileToStorage(data.file[0])
-        if(!uploadedFile){
+        if (!uploadedFile) {
             throw Error("Error uploading to storage")
         }
         const filePreview = getFilePreview(uploadedFile.$id)
-        if(!filePreview){
+        if (!filePreview) {
             deleteFile(uploadedFile.$id)
             throw Error
         }
@@ -121,7 +121,7 @@ export async function createPost(data){
             }
         )
 
-        if(!createdPost){
+        if (!createdPost) {
             deleteFile(uploadedFile.$id)
             throw Error
         }
@@ -131,7 +131,7 @@ export async function createPost(data){
     }
 }
 
-async function deleteFile(fileId){
+async function deleteFile(fileId) {
     try {
         await storage.deleteFile(config.storageId, fileId)
         return { status: 'ok' }
@@ -139,10 +139,10 @@ async function deleteFile(fileId){
         console.log(error)
     }
 }
-export async function getRecentPosts(){
+export async function getRecentPosts() {
     try {
-        const recentPosts = await databases.listDocuments(config.databaseId,config.postsCollection,[Query.orderDesc('$createdAt', Query.limit(40))]);
-        if(!recentPosts){
+        const recentPosts = await databases.listDocuments(config.databaseId, config.postsCollection, [Query.orderDesc('$createdAt', Query.limit(40))]);
+        if (!recentPosts) {
             throw Error
         }
         return recentPosts.documents
@@ -151,16 +151,16 @@ export async function getRecentPosts(){
     }
 }
 
-function getFilePreview(fileId){
+function getFilePreview(fileId) {
     try {
-        const filePreview = storage.getFilePreview(config.storageId, fileId, 1000,1000)
+        const filePreview = storage.getFilePreview(config.storageId, fileId, 1000, 1000)
         return filePreview
     } catch (error) {
         console.log(error)
     }
 }
 
-export async function uploadFileToStorage(file){
+export async function uploadFileToStorage(file) {
     try {
         const uploadedFiles = await storage.createFile(
             config.storageId,
@@ -175,27 +175,28 @@ export async function uploadFileToStorage(file){
     }
 }
 
-export async function likePost(likeArray, postId){
+export async function likePost(likeArray, postId) {
     try {
-        console.log("receing this", likeArray)
+        console.log("receing this", likeArray, postId)
         const likedPost = await databases.updateDocument(config.databaseId,
             config.postsCollection,
             postId,
             {
                 likes: likeArray
-            },[
-                Permission.update(Role.any())
-            ]
+            }, [
+            Permission.update(Role.any())
+        ]
         )
-        if(!likedPost){
+        if (!likedPost) {
             throw Error
         }
+        console.log("Liked post:", likedPost)
         return likedPost
     } catch (error) {
         console.log(error)
     }
 }
-export async function getPostById(id){
+export async function getPostById(id) {
     try {
         console.log(id, "Mapula")
         const post = await databases.listDocuments(
@@ -209,7 +210,7 @@ export async function getPostById(id){
     }
 }
 
-export async function savePost(postId, userId){
+export async function savePost(postId, userId) {
     try {
         const savedPost = await databases.createDocument(config.databaseId,
             config.savesCollection,
@@ -219,7 +220,7 @@ export async function savePost(postId, userId){
                 post: postId
             }
         )
-        if(!savedPost){
+        if (!savedPost) {
             throw Error
         }
         return savedPost
@@ -228,77 +229,110 @@ export async function savePost(postId, userId){
     }
 }
 
-export async function removeSavedPost(savedPostId){
+export async function removeSavedPost(savedPostId) {
     try {
         const status = await databases.deleteDocument(
             config.databaseId,
             config.savesCollection,
             savedPostId
         )
-        if(!status) throw Error
-        return {status: 'ok'}
+        if (!status) throw Error
+        return { status: 'ok' }
     } catch (error) {
         console.log(error)
     }
 }
 
-export async function updatePost(data){
+export async function updatePost(data) {
     console.log("received data", data)
     const fileToUpdate = data.file.length ? true : false
     console.log(fileToUpdate)
     try {
-        if(fileToUpdate){
+        if (fileToUpdate) {
             const uploadedFile = await uploadFileToStorage(data.file[0])
-            if(!uploadedFile){
+            if (!uploadedFile) {
                 throw Error("Error uploading to storage")
             }
             const filePreview = getFilePreview(uploadedFile.$id)
-            if(!filePreview){
+            if (!filePreview) {
                 deleteFile(uploadedFile.$id)
                 throw Error
             }
             const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
-        const updatedPost = await databases.updateDocument(
-            config.databaseId,
-            config.postsCollection,
-            data.postId,
-            {
-                caption: data.caption,
-                tags: tags,
-                image: filePreview,
-                imageId: uploadedFile.$id,
-                location: data.location
+            const updatedPost = await databases.updateDocument(
+                config.databaseId,
+                config.postsCollection,
+                data.postId,
+                {
+                    caption: data.caption,
+                    tags: tags,
+                    image: filePreview,
+                    imageId: uploadedFile.$id,
+                    location: data.location
+                }
+            )
+            console.log("Updated da")
+            if (!updatedPost && fileToUpdate) {
+                await deleteFile(uploadedFile.$id)
+                throw Error("Cannot update post")
             }
-        )
-        console.log("Updated da")
-        if(!updatedPost && fileToUpdate){
-            await deleteFile(uploadedFile.$id)
-            throw Error("Cannot update post")
-        }
-        console.log("HMMMMMMM")
-        if(fileToUpdate){
-            console.log("REmovingg old image")
-            await deleteFile(data.imageId)
-            return updatedPost;
-        }
+            console.log("HMMMMMMM")
+            if (fileToUpdate) {
+                console.log("REmovingg old image")
+                await deleteFile(data.imageId)
+                return updatedPost;
+            }
         }
     } catch (error) {
         console.log(error)
     }
 }
 
-export async function deletePost(postId, imageId){
+export async function deletePost(postId, imageId) {
     try {
         const status = await databases.deleteDocument(
             config.databaseId,
             config.postsCollection,
             postId,
         )
-        if(!status){
+        if (!status) {
             throw Error
         }
         await deleteFile(imageId);
-        return {status: 'ok'}
+        return { status: 'ok' }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function getInfinitePosts({ pageParam }) {
+    const queries = [Query.orderDesc('$updatedAt'), Query.limit(5)];
+    if (pageParam) {
+        queries.push(Query.cursorAfter(pageParam.toString()))
+    }
+
+    try {
+        const posts = await databases.listDocuments(
+            config.databaseId,
+            config.postsCollection,
+            queries
+        )
+        if (!posts) throw Error
+        return posts
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function searchPosts(searchWord) {
+    try {
+        const posts = await databases.listDocuments(
+            config.databaseId,
+            config.postsCollection,
+            [Query.search('caption', searchWord)]
+        )
+        if (!posts) throw Error;
+        return posts
     } catch (error) {
         console.log(error)
     }
