@@ -31,7 +31,7 @@ function FileUploader({ name, mode, image }) {
     useEffect(() => {
         register(name, {
             required: {
-                value: true,
+                value: mode == 'create'? true : false,
                 message: "Image required"
             }
         })
@@ -41,29 +41,27 @@ function FileUploader({ name, mode, image }) {
     }, [register, unregister, name])
 
     return (
-        <div className='p-4'>
-            <Paper elevation={1} sx={{
-                backgroundColor: '#F1F5F9', borderColor: 'darkgray', borderWidth: '0.5px', ":hover": {
-                    borderColor: 'black'
-                },
+        <div className='p-4 drop-shadow-form'>
+            <Paper square elevation={1} sx={{
+                backgroundColor: 'primary.light', border: '1px solid #ebe8e844'
             }}>
                 <div {...getRootProps({
-                    className: 'text-[#800080] w-full border border-black font-varela px-3 cursor-pointer grid place-content-center text-2xl'
+                    className: 'p-7 text-white/75 w-full border border-black font-varela px-3 cursor-pointer grid place-content-center text-2xl border-none'
                 })}>
                     <input {...getInputProps({
                         className: 'border border-red-100 bg-black'
                     })} id='images'/>
                     {
-                        mode == 'update' ? <div className='h-full w-full bg-black'>
+                        mode == 'update' && file?.length == 0 ? <div className='h-full w-full bg-black'>
                             <img src={image} className='w-full'></img>
                         </div> 
                         : 
                         file?.length ? <div className='w-full h-full'>
-                        <img src={URL.createObjectURL(file[0])} className='w-full'></img>
+                        <img src={URL.createObjectURL(file[0])} className='w-full aspect-square'></img>
                         </div> 
                         : 
-                        <div className='bg-black max-h-full max-w-full'>
-                            <FaPhotoVideo className='text-[#800080] m-auto w-24 h-24 mb-4' />
+                        <div className=''>
+                            <FaPhotoVideo className='m-auto w-24 h-24 mb-4' />
                             {
                                 isDragActive ?
                                 <p>Drop images here</p> :
@@ -71,13 +69,11 @@ function FileUploader({ name, mode, image }) {
                             }
                         </div>
                     }
-                    <p>Click on the picture to choose another picture</p>
+                    {
+                        file?.length > 0 && <p className='w-full text-center p-4'>Click on the picture to choose another picture</p>
+                    }
                 </div>
-                <button onClick={() => {
-                    setValue(name, [])
-                }}>Reset</button>
-            </Paper>
-            
+            </Paper>    
         </div>
     )
 }

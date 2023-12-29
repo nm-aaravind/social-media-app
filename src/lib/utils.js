@@ -37,8 +37,12 @@ export function formatDateString(dateString) {
         return `${Math.floor(diffInDays)} days ago`;
       case Math.floor(diffInHours) >= 1:
         return `${Math.floor(diffInHours)} hours ago`;
+      case Math.floor(diffInHours) === 1:
+        return `${Math.floor(diffInHours)} hour ago`;
       case Math.floor(diffInMinutes) >= 1:
         return `${Math.floor(diffInMinutes)} minutes ago`;
+        case Math.floor(diffInMinutes) === 1:
+          return `${Math.floor(diffInMinutes)} minute ago`;
       default:
         return "Just now";
     }

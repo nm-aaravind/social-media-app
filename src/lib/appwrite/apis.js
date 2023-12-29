@@ -97,7 +97,6 @@ export async function getEmailFromUsername(username){
 }
 export async function createPost(data){
     try {
-        console.log(data, "inside create post")
         const uploadedFile = await uploadFileToStorage(data.file[0])
         if(!uploadedFile){
             throw Error("Error uploading to storage")
@@ -108,7 +107,6 @@ export async function createPost(data){
             throw Error
         }
         const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
-        console.log(data.user, "Inside create post for user")
         const createdPost = await databases.createDocument(
             config.databaseId,
             config.postsCollection,
@@ -238,6 +236,68 @@ export async function removeSavedPost(savedPostId){
             savedPostId
         )
         if(!status) throw Error
+        return {status: 'ok'}
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function updatePost(data){
+    console.log("received data", data)
+    const fileToUpdate = data.file.length ? true : false
+    console.log(fileToUpdate)
+    try {
+        if(fileToUpdate){
+            const uploadedFile = await uploadFileToStorage(data.file[0])
+            if(!uploadedFile){
+                throw Error("Error uploading to storage")
+            }
+            const filePreview = getFilePreview(uploadedFile.$id)
+            if(!filePreview){
+                deleteFile(uploadedFile.$id)
+                throw Error
+            }
+            const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
+        const updatedPost = await databases.updateDocument(
+            config.databaseId,
+            config.postsCollection,
+            data.postId,
+            {
+                caption: data.caption,
+                tags: tags,
+                image: filePreview,
+                imageId: uploadedFile.$id,
+                location: data.location
+            }
+        )
+        console.log("Updated da")
+        if(!updatedPost && fileToUpdate){
+            await deleteFile(uploadedFile.$id)
+            throw Error("Cannot update post")
+        }
+        console.log("HMMMMMMM")
+        if(fileToUpdate){
+            console.log("REmovingg old image")
+            await deleteFile(data.imageId)
+            return updatedPost;
+        }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function deletePost(postId, imageId){
+    try {
+        const status = await databases.deleteDocument(
+            config.databaseId,
+            config.postsCollection,
+            postId,
+        )
+        if(!status){
+            throw Error
+        }
+        await deleteFile(imageId);
         return {status: 'ok'}
     } catch (error) {
         console.log(error)

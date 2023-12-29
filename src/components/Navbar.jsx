@@ -20,7 +20,7 @@ const Listbox = styled('ul')(
   `,
 );
 
-function Navbar() {
+function Navbar({ offset }) {
   const { userDetails } = useContext(UserContext)
   const { mutate: signOut, isSuccess } = useSignOut()
   const navigate = useNavigate()
@@ -47,14 +47,13 @@ function Navbar() {
 
   return (
     <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl w-full'>
-      <div className='p-4 sm:w-[87%] m-auto flex justify-between items-center'>
-        <Typography variant='h2' component='h1' color='whitesmoke'>
+      <div className={`p-4 ${offset > 50 ? 'h-16' : 'h-28'} w-full sm:w-[87%] m-auto flex ${offset > 50 ? 'justify-center' : 'justify-between'} items-center transition-all`}>
+        <Typography variant={`${offset > 50 ? 'h4' : 'h2'}`} component='h1' color='whitesmoke'>
           <Link to={'/'}>Heyo</Link>
         </Typography>
-        <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} transition-transform`} onClick={handleDropDown}>
+        <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} ${offset > 50 ? 'hidden opacity-0' : 'visible'}  transition-all`} onClick={handleDropDown}>
           <img src={userDetails.imageUrl} alt="profile-image" className='w-14 rounded-full' />
         </button>
-
         <Menu PaperProps={{
           style: {
             backgroundColor: '#232323', // Set your desired grey background color here
@@ -75,6 +74,7 @@ function Navbar() {
           }}><p className='text-center  w-full'>Profile</p></MenuItem>
           <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', color: '#f73123', height: '4rem' }} onClick={handleSignout}><p className='text-center w-full'>Log out</p></MenuItem>
         </Menu>
+
       </div>
     </AppBar>
   )

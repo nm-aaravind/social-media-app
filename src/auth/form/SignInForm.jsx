@@ -95,7 +95,7 @@ function SignInForm() {
           </FormControl>
         </Paper>
         {errors.password && <Typography variant='h6' component='p' fontFamily={"Varela Round"} color='red' marginTop={"-32px"} marginBottom={"8px"} font>{errors.password?.message}</Typography>}
-        <Button type='submit' variant="outlined" color='secondary' sx={{ fontSize: '18px', height: '49px', borderRadius: 0, boxShadow: '0px 5px 5px rgba(0,0,0,0.5)' , ":hover": { backgroundColor: 'green', border: 'green', color: 'white' } }} className='drop-shadow-form-field'>Sign In</Button>
+        <Button type='submit' variant="outlined" sx={{ border: '1px solid #ebe8e888' ,fontSize: '18px', height: '49px', borderRadius: 0, boxShadow: '0px 5px 5px rgba(0,0,0,0.5)' , color: 'white' , ":hover": { backgroundColor: 'green', border: 'green', color: '#ebe8e888' } }} className='drop-shadow-form-field'>Sign In</Button>
       </form>
       <Typography sx={{color:'#ebe8e8aa'}} component='p' fontSize='25px' marginY='40px'>
         New user? <Link className='text-[#ebe8e8] underline-offset-4 underline' to={'/signup'}>Sign Up</Link>

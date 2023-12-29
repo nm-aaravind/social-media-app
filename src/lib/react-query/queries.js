@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts, likePost, savePost, removeSavedPost, getUser, getSaves } from '../appwrite/apis'
+import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts, likePost, savePost, removeSavedPost, getUser, getSaves, updatePost, deletePost } from '../appwrite/apis'
 
 export const useCreateUser = () => {
     return useMutation({
@@ -104,5 +104,30 @@ export const useGetPostById = (id) => {
     return useQuery({
         queryKey: ['getPostById', id],
         queryFn: () => getPostById(id)
+    })
+}
+export const useUpdatePost = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (post) => updatePost(post),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ['getRecentPosts']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['getPostById', data?.$id]
+            })
+        }
+    })
+}
+export const useDeletePost = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ postId, imageId }) => deletePost(postId, imageId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['getRecentPosts']
+            })
+        }
     })
 }
