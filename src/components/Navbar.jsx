@@ -1,4 +1,4 @@
-import { Typography, Divider, AppBar, Menu, MenuItem } from '@mui/material'
+import { Typography, AppBar, Menu, MenuItem } from '@mui/material'
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
@@ -20,7 +20,7 @@ const Listbox = styled('ul')(
   `,
 );
 
-function Navbar({ offset }) {
+function Navbar() {
   const { userDetails } = useContext(UserContext)
   const { mutate: signOut, isSuccess } = useSignOut()
   const navigate = useNavigate()
@@ -47,20 +47,18 @@ function Navbar({ offset }) {
 
   return (
     <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl w-full'>
-      <div className={`p-4 ${offset > 50 ? 'h-16' : 'h-28'} w-full sm:w-[87%] m-auto flex ${offset > 50 ? 'justify-center' : 'justify-between'} items-center transition-all`}>
-        <Typography variant={`${offset > 50 ? 'h4' : 'h2'}`} component='h1' color='whitesmoke'>
+      <div className={`p-2 xs:w-full xs:px-4 sm:w-[87%] m-auto flex justify-between items-center transition-all`}>
+        <Typography variant='h2' component='h1' color='whitesmoke'>
           <Link to={'/'}>Heyo</Link>
         </Typography>
-        <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} ${offset > 50 ? 'hidden opacity-0' : 'visible'}  transition-all`} onClick={handleDropDown}>
-          <img src={userDetails.imageUrl} alt="profile-image" className='w-14 rounded-full' />
+        <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} visible transition-all`} onClick={handleDropDown}>
+          <img src={userDetails.imageUrl} alt="profile-image" className='w-11' />
         </button>
         <Menu PaperProps={{
           style: {
             backgroundColor: '#232323', // Set your desired grey background color here
             marginTop: '1.2rem',
-            translate: '-29%',
             border: '3px solid #ebebeb33',
-            offset: '10px',
             color: '#ebebeb',
             borderRadius: '0px',
             minWidth: '200px',

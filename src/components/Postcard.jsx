@@ -1,23 +1,81 @@
-import { Typography } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { useGetUser } from '../lib/react-query/queries'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDeletePost, useGetUser } from '../lib/react-query/queries'
 import PostStats from './PostStats'
-import {Box} from '@mui/material'
+import { Box } from '@mui/material'
+import { MoreVertSharp } from '@mui/icons-material'
+import styled from 'styled-components'
+import Loader from './Loader'
+
+const Listbox = styled('ul')(
+    ({ theme }) => `
+    font-family: 'Varela', sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+    min-width: 200px;
+    border-radius: 0px;
+    overflow: auto;
+    box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(255,255,255, 1)'
+        };
+    z-index: 1;
+    `,
+);
+
 function Postcard({ post, saves, user }) {
+    const [anchorEl, setAnchorEl] = React.useState(null)
+    const open = Boolean(anchorEl)
+    const navigate = useNavigate()
+    const { mutateAsync: deletePost, isPending: isDeleting } = useDeletePost()
+    const handleDropDown = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+    const handleDropDownClose = () => {
+        setAnchorEl(null)
+    }
     return (
-        <Box bgcolor='primary.light' border='1px solid #fff2' className=' w-full lg:w-[45rem] lg:h-[52rem] md:w-[40rem] md:h-[47rem] sm:h-[38rem] sm:w-[35rem] overflow-hidden drop-shadow-form'>
+        <Box bgcolor='primary.light' border='1px solid #fff2' className=' w-full lg:w-[45rem] lg:h-[52rem] md:w-[40rem] md:h-[47rem] sm:w-full overflow-hidden drop-shadow-form'>
             <Box borderBottom='1px solid #fff2' className='header w-full sm:h-20 md:h-24 lg:h-28 flex justify-between items-center'>
-                <Link to={`/profile/${user?.$id}`} className='float-left flex items-center'>
-                    <img src={user?.profileimageurl} className='sm:w-14 md:w-16 lg:w-[4.5rem] rounded-full mx-9'></img>
-                    <p className='sm:text-2xl lg:text-3xl font-varela text-purple-500 -ml-3'>{user?.username}</p>
+                <Link to={`/profile/${post.user?.$id}`} className='float-left flex items-center'>
+                    <img src={post.user?.profileimageurl} className='sm:w-14 md:w-16 lg:w-[4rem] rounded-full ml-9 mr-7'></img>
+                    <p className='sm:text-2xl lg:text-2xl font-varela text-white -ml-3'>{post.user?.username}</p>
                 </Link>
-                {user?.accountid===post?.user.accountid && <Link to={`/update-post/${post.$id}`} className='mx-9 sm:text-2xl lg:text-3xl font-varela text-purple-500'>Update</Link>}
+                {
+                    user?.accountid === post?.user.accountid && <button onClick={handleDropDown} className='mr-6 rounded-full p-2 hover:bg-[#333]'>
+                        <MoreVertSharp fontSize='large' color='secondary' />
+                    </button>
+                }
+                <Menu PaperProps={{
+                    style: {
+                        backgroundColor: '#232323', // Set your desired grey background color here
+                        marginTop: '1.2rem',
+                        border: '3px solid #ebebeb33',
+                        color: '#ebebeb',
+                        borderRadius: '0px',
+                        minWidth: '200px',
+                        boxShadow: '0px 10px 5px rgba(0,0,0,0.6)'
+                        // Set your desired margin value here
+                    },
+                }} anchorEl={anchorEl} open={open} onClose={handleDropDownClose} slots={{ listbox: Listbox }}>
+                    <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', height: '4rem' }} onClick={() => {
+                        navigate(`update-post/${post.$id}`)
+                        handleDropDownClose()
+                    }}><p className='text-center  w-full'>Update Post</p></MenuItem>
+                    <MenuItem onClick={() => {
+                        handleDropDownClose()
+                        deletePost({ postId: post.$id, imageId: post.imageId });
+                    }} sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', color: '#f73123', height: '4rem' }} ><p className='text-center w-full'>Delete Post</p></MenuItem>
+                </Menu>
             </Box>
             <div className='w-full overflow-hidden object-fill sm:h-[26rem] md:h-[33rem] lg:h-[36rem] bg-slate-600'>
                 <img src={post.image} className='h-full w-full'></img>
             </div>
-            <PostStats post={post} userId={user?.$id} saves={saves}/>
+            <PostStats post={post} userId={user?.$id} saves={saves} />
+            {
+                isDeleting && <div className='absolute grid place-self-center top-0 w-full h-full bg-[#707070bb]'>
+                    <Loader message="Deleting" />
+                </div>
+            }
         </Box>
     )
 }

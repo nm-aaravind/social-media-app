@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts, likePost, savePost, removeSavedPost, getUser, getSaves, updatePost, deletePost, getInfinitePosts, searchPosts } from '../appwrite/apis'
+import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts, likePost, savePost, removeSavedPost, getUser, getSaves, updatePost, deletePost, getInfinitePosts, searchPosts, updateProfile } from '../appwrite/apis'
 
 export const useCreateUser = () => {
     return useMutation({
@@ -50,6 +50,9 @@ export const useLikePost = () => {
             queryClient.invalidateQueries({
                 queryKey: ['getUserProfile']
             })
+            queryClient.invalidateQueries({
+                queryKey: ['getInfinitePosts']
+            })
         }
     })
 }
@@ -72,6 +75,9 @@ export const useSavePost = () => {
             })
             queryClient.invalidateQueries({
                 queryKey: ['getPosts']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['getInfinitePosts']
             })
         }
     })
@@ -128,6 +134,9 @@ export const useDeletePost = () => {
             queryClient.invalidateQueries({
                 queryKey: ['getRecentPosts']
             })
+            queryClient.invalidateQueries({
+                queryKey: ['getInfinitePosts']
+            })
         }
     })
 }
@@ -149,5 +158,17 @@ export const useSearchPosts = (searchWord) => {
         queryKey: ['searchPosts', searchWord],
         queryFn : () => searchPosts(searchWord),
         enabled: !!searchWord
+    })
+}
+
+export const useUpdateProfile = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ userId, name, username, bio, file, image, currImage }) => updateProfile(userId, name, username, bio, file, image, currImage),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['getUser']
+            })
+        }
     })
 }

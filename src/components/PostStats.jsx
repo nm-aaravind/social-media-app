@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { FaRegHeart, FaHeart, FaRegComment } from 'react-icons/fa6'
-import { Link } from 'react-router-dom'
+import { Favorite, ChatBubbleOutlineOutlined, ChatBubble, BookmarkAddOutlined, BookmarkRemove, FavoriteBorder  } from '@mui/icons-material';
 import { multiFormatDateString, checkIsLiked } from '../lib/utils'
-import { RiBookmark3Line, RiBookmark3Fill } from "react-icons/ri";
 import { Box } from '@mui/material';
 import { useGetUser, useLikePost, useRemoveSavedPost, useSavePost } from '../lib/react-query/queries';
 
@@ -52,23 +50,23 @@ function PostStats({ post, userId, forGrid }) {
             <div className='flex gap-6 text-white'>
                 <button className='' onClick={toggleLike}>
                     {
-                        checkIsLiked(likes, userId) ? <FaHeart className='text-red-600  w-8 h-7' /> :
-                        <FaRegHeart className='w-8 h-7'/>
+                        checkIsLiked(likes, userId) ? <Favorite fontSize='large' color='error' className='w-8 h-7' /> :
+                        <FavoriteBorder fontSize='large' className=''/>
                     }
                 </button>
                 {
                     !forGrid && <button>
-                        <FaRegComment className='w-8 h-7'/>
+                        <ChatBubbleOutlineOutlined fontSize='large' className='w-8 h-7'/>
                     </button>
                 }
                 <button className='ml-auto mr-2' onClick={toggleSave}>
                     {
-                        savePending || removeSavePending ? <p>Saving</p> : isSaved ? <RiBookmark3Fill className='w-8 h-7' /> :
-                        <RiBookmark3Line className='w-8 h-7'/>
+                        savePending || removeSavePending ? <p className='font-varela'>Saving</p> : isSaved ? <BookmarkRemove fontSize='large' color='info' className='w-8 h-7' /> :
+                        <BookmarkAddOutlined fontSize='large' className='w-8 h-7'/>
                     }
                 </button>
             </div>
-            <p className='text-white text-ellipsis text-lg font-varela overflow-hidden mt-1 whitespace-nowrap md:text-lg lg:text-xl'><span className=''>{post.user.username}</span> {!forGrid && post.caption}</p>
+            <p className='text-white text-ellipsis text-lg font-varela overflow-hidden line-clamp-2 mt-1 whitespace-nowrap sm:text-lg md:text-2xl'><span className=''>{post.user.username}</span> {!forGrid && post.caption}</p>
             {
                 !forGrid && <span className='text-white sm:text-md lg:text-lg font-varela text-black/80 mt-1'>{multiFormatDateString(post.$createdAt)}</span>
             }

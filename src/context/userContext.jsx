@@ -16,13 +16,20 @@ export const UserProvider = ({ children }) => {
         imageUrl: '',
     })
     const [isAuthenticated, setIsAuthenticated] = React.useState(false)
-    console.log(isAuthenticated,userDetails, "Inside contexxt")
+    console.log(isAuthenticated, userDetails, "Inside contexxt")
     const [isLoading, setIsLoading] = React.useState(false)
+    const updateContext = (updatedProfile) => {
+        userDetails.imageUrl = updatedProfile.profileimageurl
+        userDetails.name = updatedProfile.name
+        userDetails.username = updatedProfile.username
+        userDetails.bio = updatedProfile.bio
+    }
     const checkAuth = async () => {
         try {
             const currentUser = await getUser();
             if (currentUser) {
-                setUserDetails({...userDetails,
+                setUserDetails({
+                    ...userDetails,
                     name: currentUser.name,
                     accountid: currentUser.$id,
                     username: currentUser.username,
@@ -47,7 +54,7 @@ export const UserProvider = ({ children }) => {
         checkAuth()
     }, [])
     return (
-        <UserContext.Provider value={{ userDetails, setUserDetails, checkAuth, isAuthenticated, setIsAuthenticated, isLoading, setIsLoading }}>
+        <UserContext.Provider value={{ userDetails, setUserDetails, checkAuth, isAuthenticated, setIsAuthenticated, isLoading, setIsLoading, updateContext }}>
             {children}
         </UserContext.Provider>
     )

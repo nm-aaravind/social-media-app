@@ -9,6 +9,17 @@ import PostDetails from './root/pages/PostDetails'
 
 
 function App() {
+
+    // React.useEffect(() => {
+    //     const initialValue = document.body.style.zoom;
+
+    //     document.body.style.zoom = "67%";
+    
+    //     return () => {
+    //       document.body.style.zoom = initialValue;
+    //     };
+    //   }, []);
+
     return (
         <main>
             <Routes>
@@ -21,7 +32,6 @@ function App() {
                     <Route path='/explore' element={<Explore />} />
                     <Route path='/saved' element={<Saved />} />
                     <Route path='/create-post' element={<CreatePost />} />
-                    {/* <Route path='/users' element={<Users />} /> */}
                     <Route path='/update-post/:id' element={<UpdatePost />} />
                     <Route path='/posts/:id' element={<PostDetails/>} />
                     <Route path='/profile/:id' element={<Profile />} />

@@ -7,14 +7,13 @@ import { Box } from '@mui/material'
 import { useOutletContext } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader'
 function Home() {
-  const { data: posts, isPending } = useGetRecentPosts()
-  const { data: user } = useGetUser();
-  const [offset] = useOutletContext()
+  const { data: posts, isPending: isFetchingPosts } = useGetRecentPosts()
+  const { data: user, isPending: isFetchingUser } = useGetUser();
   return (
     <Box color='primary' className='w-full home-container flex mb-32 mt-56 '>
-      <PageHeader offset={offset} heading="Home" />
+      <PageHeader heading="Home" />
       {
-        isPending || !posts ? <Loader message={"Hold on while we fetch your feed"}/> : <div className='post-container m-auto'>
+        isFetchingPosts || !posts || isFetchingUser ? <Loader message={"Hold on while we fetch your feed"}/> : <div className='post-container m-auto'>
         <ul className='flex flex-col w-full gap-14 '>
           {
             posts.map((post) => <Postcard post={post} user={user} />)

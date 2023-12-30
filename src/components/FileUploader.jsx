@@ -5,7 +5,7 @@ import { Paper, Typography } from '@mui/material';
 import { Divider } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 
-function FileUploader({ name, mode, image }) {
+function FileUploader({ name, mode, image, forProfile = false }) {
     const {
         register,
         unregister,
@@ -52,12 +52,12 @@ function FileUploader({ name, mode, image }) {
                         className: 'border border-red-100 bg-black'
                     })} id='images'/>
                     {
-                        mode == 'update' && file?.length == 0 ? <div className='h-full w-full bg-black'>
-                            <img src={image} className='w-full'></img>
+                        mode == 'update' && file?.length == 0 ? <div className='m-auto sm:h-56 md:h-96'>
+                            <img src={image} className='sm:h-56 md:h-96 aspect-square'></img>
                         </div> 
                         : 
-                        file?.length ? <div className='w-full h-full'>
-                        <img src={URL.createObjectURL(file[0])} className='w-full aspect-square'></img>
+                        file?.length ? <div className='m-auto sm:h-56 md:h-96'>
+                        <img src={URL.createObjectURL(file[0])} className= 'sm:h-56 md:h-96 aspect-square'></img>
                         </div> 
                         : 
                         <div className=''>
@@ -65,12 +65,12 @@ function FileUploader({ name, mode, image }) {
                             {
                                 isDragActive ?
                                 <p>Drop images here</p> :
-                                <p>Drag and drop, or click to select images</p>
+                                <p>Drag and drop, or click to select image</p>
                             }
                         </div>
                     }
                     {
-                        file?.length > 0 && <p className='w-full text-center p-4'>Click on the picture to choose another picture</p>
+                        file?.length > 0 && <p className='w-full text-center p-4'>{!forProfile ? 'Click here to choose another picture' : 'Click here to change profile photo'}</p>
                     }
                 </div>
             </Paper>    

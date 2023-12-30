@@ -244,9 +244,7 @@ export async function removeSavedPost(savedPostId) {
 }
 
 export async function updatePost(data) {
-    console.log("received data", data)
     const fileToUpdate = data.file.length ? true : false
-    console.log(fileToUpdate)
     try {
         if (fileToUpdate) {
             const uploadedFile = await uploadFileToStorage(data.file[0])
@@ -271,14 +269,11 @@ export async function updatePost(data) {
                     location: data.location
                 }
             )
-            console.log("Updated da")
             if (!updatedPost && fileToUpdate) {
                 await deleteFile(uploadedFile.$id)
                 throw Error("Cannot update post")
             }
-            console.log("HMMMMMMM")
             if (fileToUpdate) {
-                console.log("REmovingg old image")
                 await deleteFile(data.imageId)
                 return updatedPost;
             }
@@ -334,6 +329,49 @@ export async function searchPosts(searchWord) {
         )
         if (!posts) throw Error;
         return posts
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function updateProfile(userId, name, username, bio, file, image, currImage) {
+    try {
+        let imageURL = ''
+        let uploadedFile = null
+        const fileToUpdate = file.length ? true : false
+        if (fileToUpdate) {
+            uploadedFile = await uploadFileToStorage(file[0])
+            if (!uploadedFile) {
+                throw Error("Error uploading to storage")
+            }
+            imageURL = getFilePreview(uploadedFile.$id)
+            if (!imageURL) {
+                deleteFile(uploadedFile.$id)
+                throw Error
+            }
+        }else{
+            imageURL = image
+        }
+        const updatedPost = await databases.updateDocument(
+            config.databaseId,
+            config.usersCollection,
+            userId,
+            {
+                name: name,
+                username: username,
+                bio: bio,
+                profileimageid: fileToUpdate ? uploadedFile.$id : null,
+                profileimageurl: imageURL
+            }
+        )
+        if (!updatedPost && fileToUpdate) {
+            await deleteFile(uploadedFile.$id)
+            throw Error("Cannot update profile")
+        }
+        if (fileToUpdate && currImage) {
+            await deleteFile(currImage)
+        }
+        return updatedPost;
     } catch (error) {
         console.log(error)
     }
