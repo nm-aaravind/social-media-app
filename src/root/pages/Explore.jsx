@@ -8,13 +8,20 @@ import GridPostList from '../../components/GridPostList'
 import SearchResults from '../../components/SearchResults'
 import { useGetPosts, useSearchPosts } from '../../lib/react-query/queries'
 import useDebounce from '../../hooks/useDebounce'
-import { useInfiniteQuery } from '@tanstack/react-query'
 import Loader from '../../components/Loader'
+import { useInView } from 'react-intersection-observer'
 function Explore() {
   const { data: posts, fetchNextPage, hasNextPage, isPending, isFetching } = useGetPosts()
   const [search, setSearch] = React.useState('')
   const debounceValue = useDebounce(search, 500)
-  const { data: searchedPosts } = useSearchPosts()
+  const { data: searchedPosts, isPending: isSearchFetching } = useSearchPosts(debounceValue)
+  console.log(searchedPosts, "Searched posts")
+  const [offset] = useOutletContext()
+  const { ref, inView } = useInView();
+  console.log(hasNextPage, "HASNEXT")
+  React.useEffect(() => {
+    if (inView && !search) fetchNextPage();
+  }, [inView, search])
 
   if (!posts) return <div>Loading</div>
 
@@ -22,27 +29,31 @@ function Explore() {
 
   const shouldShowSearchResults = search !== ''
   const shouldShowPosts = !shouldShowSearchResults && posts.pages.every((item) => item.documents.length === 0)
-  const [offset] = useOutletContext()
   return (
-    <Box bgcolor='primary.main' className='w-full flex justify-center'>
-      <PageHeader offset={offset} heading="Explore" />
-      <div className='sm:w-full xl:w-[85%] sm:px-10 md:px-14 flex flex-col gap-10'>
-        <div className='pt-52'>
+    <Box bgcolor='primary.main' className='w-full flex flex-col items-center'>
+      {/* <PageHeader offset={offset} heading="Explore" /> */}
+      <div className='bg-[#272727] sm:w-full xl:w-[85%] sm:px-10 md:px-14 flex flex-col'>
+        <div className='pt-56'>
           <SearchBar search={search} setSearch={setSearch} />
         </div>
         <div className='flex flex-col'>
-          <div className='p-2 flex justify-between'>
+          <div className='px-4 pt-12 flex justify-between'>
             <Typography variant='h4' component='h3' color='secondary'>Popular</Typography>
             <FilterList color='secondary' sx={{ width: '30px', height: '30px' }} />
           </div>
           <div className='mt-10'>
             {
-              shouldShowSearchResults ? <SearchResults /> :
-                shouldShowPosts ? <p>End of content</p> :
-                  posts.pages.map((item, index) => <GridPostList key={index} posts={item.documents} />)
+              shouldShowSearchResults ? <SearchResults isSearchFetching={isSearchFetching} searchedPosts={searchedPosts} /> :
+                shouldShowPosts ? <p className='mb-32 w-96 h-96 bg-white'>End of content</p> :
+                  <GridPostList posts={posts} toDisplay={'explore'}/>
             }
           </div>
         </div>
+        { hasNextPage && !search ?
+          <div ref={ref} className='mb-28 -mt-10'>
+            <Loader />
+          </div> : <p className='w-full mb-24 -mt-10 pb-10 text-center'><Typography align='center' variant='h4' color='secondary'>Thats all to show !</Typography></p>
+        }
       </div>
     </Box>
   )

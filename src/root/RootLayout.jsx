@@ -7,7 +7,9 @@ function RootLayout() {
   const [offset, setOffset] = React.useState(0);
   React.useEffect(() => {
     window.onscroll = () => {
-      setOffset(window.pageYOffset);
+      if(window.scrollY > 0 && window.scrollY < 500){
+        setOffset(window.scrollY);
+      }
     };
   }, []);
   return (

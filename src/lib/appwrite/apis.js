@@ -326,6 +326,7 @@ export async function getInfinitePosts({ pageParam }) {
 
 export async function searchPosts(searchWord) {
     try {
+        console.log(searchWord, "THE WORD")
         const posts = await databases.listDocuments(
             config.databaseId,
             config.postsCollection,
