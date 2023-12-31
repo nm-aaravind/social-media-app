@@ -19,7 +19,7 @@ function GridPostList({ posts, toDisplay }) {
     console.log(postsToRender)
     return (
         <ul className='flex flex-grow gap-12 justify-center flex-wrap mb-32'>
-            {postsToRender.map((item) => <li className='drop-shadow-3xl inline items-stretch xl:w-[24rem] lg:w-[20rem] md:w-[18rem] sm:w-[20rem] hover:scale-110 transition-all'>
+            {postsToRender.map((item) => <li className='drop-shadow-3xl inline items-stretch xl:w-[24rem] lg:w-[20rem] md:w-[18rem] sm:w-[12rem] hover:scale-110 transition-all'>
                 <Link className='' to={`/posts/${item.$id}`}>
                     <img className='h-full w-full' src={item.image}></img>
                 </Link>

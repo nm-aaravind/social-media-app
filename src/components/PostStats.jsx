@@ -46,29 +46,29 @@ function PostStats({ post, userId, forGrid }) {
 
     }
     return (
-        <Box borderTop='2px solid #fff8' className={`${forGrid ? 'bg-transparent' : 'bg-[#272727]'} flex flex-col text-ellipsis px-5 pt-3 ${forGrid ? 'h-[5.5rem]' : 'sm:h-28 md:h-32 lg:h-36'}`}>
-            <div className='flex gap-6 text-white'>
+        <Box className={`${forGrid ? 'bg-transparent' : 'bg-[#272727]'} flex flex-col text-ellipsis px-5 pt-3 ${forGrid ? 'h-[6.5rem]' :'md:h-36'} md:border-t md:border-white/90`}>
+            <div className='flex gap-6 text-white sm:text-2xl md:text-3xl'>
                 <button className='' onClick={toggleLike}>
                     {
-                        checkIsLiked(likes, userId) ? <Favorite fontSize='large' color='error' className='w-8 h-7' /> :
-                        <FavoriteBorder fontSize='large' className=''/>
+                        checkIsLiked(likes, userId) ? <Favorite fontSize='inherit' color='error' className='w-8 h-7' /> :
+                        <FavoriteBorder fontSize='inherit' className=''/>
                     }
                 </button>
                 {
                     !forGrid && <button>
-                        <ChatBubbleOutlineOutlined fontSize='large' className='w-8 h-7'/>
+                        <ChatBubbleOutlineOutlined fontSize='inherit' className='w-8 h-7'/>
                     </button>
                 }
                 <button className='ml-auto mr-2' onClick={toggleSave}>
                     {
-                        savePending || removeSavePending ? <p className='font-varela'>Saving</p> : isSaved ? <BookmarkRemove fontSize='large' color='info' className='w-8 h-7' /> :
-                        <BookmarkAddOutlined fontSize='large' className='w-8 h-7'/>
+                        savePending || removeSavePending ? <p className='font-varela'>Saving</p> : isSaved ? <BookmarkRemove fontSize='inherit'  color='info' className='w-8 h-7' /> :
+                        <BookmarkAddOutlined fontSize='inherit'  className='w-8 h-7'/>
                     }
                 </button>
             </div>
-            <p className='text-white text-ellipsis text-lg font-varela overflow-hidden line-clamp-2 mt-1 whitespace-nowrap sm:text-lg md:text-2xl'><span className=''>{post.user.username}</span> {!forGrid && post.caption}</p>
+            <p className='text-white text-ellipsis text-lg font-varela overflow-hidden line-clamp-2 mt-1 whitespace-nowrap sm:text-md md:text-2xl mb-5'><span className={`${forGrid && 'pb-2'}`}>{post.user.username}</span> {!forGrid && post.caption}</p>
             {
-                !forGrid && <span className='text-white sm:text-md lg:text-lg font-varela text-black/80 mt-1'>{multiFormatDateString(post.$createdAt)}</span>
+                !forGrid && <span className='text-white sm:text-md lg:text-lg font-varela text-black/80'>{multiFormatDateString(post.$createdAt)}</span>
             }
         </Box>
     )

@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'sm': '300px'
+      },
       dropShadow: {
         'form': '5px 10px 5px rgba(0,0,0,0.8)',
           '3xl': '0px 10px 5px rgba(0,0,0,0.8)',

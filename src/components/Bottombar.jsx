@@ -4,14 +4,14 @@ import { Box } from '@mui/material';
 import { AddOutlined, BookmarkOutlined, HomeOutlined, SearchOutlined } from '@mui/icons-material';
 function Bottombar() {
   return (
-    <Box bgcolor='primary.light' className='w-full drop-shadow-3xl-inverted md:h-[4.5rem] sm:h-[4rem] fixed bottom-0 flex justify-between'>
+    <Box bgcolor='primary.light' className='w-full drop-shadow-3xl-inverted h-[4.5rem] fixed bottom-0 flex justify-between sm:text-3xl md:text-5xl'>
       <NavLink
         to="/"
         className={({ isActive, isPending }) =>
           isActive ? "text-white w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444]"
         }
       >
-        <HomeOutlined fontSize='large' className='text-inherit m-auto' />
+        <HomeOutlined fontSize='inherit' className='m-auto' />
       </NavLink>
       <NavLink
         to="/explore"
@@ -19,7 +19,7 @@ function Bottombar() {
           isActive ? "text-white bottom-active w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444] transition-colors"
         }
       >
-        <SearchOutlined fontSize='large' className='text-inherit m-auto' />
+        <SearchOutlined fontSize='inherit' className='text-inherit m-auto' />
       </NavLink>
       <NavLink
         to="/create-post"
@@ -27,7 +27,7 @@ function Bottombar() {
           isActive ? "text-white bottom-active w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444]"
         }
       >
-        <AddOutlined fontSize='large' className='text-inherit m-auto' />
+        <AddOutlined fontSize='inherit' className='text-inherit m-auto' />
       </NavLink>
       <NavLink
         to="/saved"
@@ -35,7 +35,7 @@ function Bottombar() {
           isPending ? "pending" : isActive ? "text-white bottom-active w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444]"
         }
       >
-        <BookmarkOutlined fontSize='large' className='text-inherit m-auto' />
+        <BookmarkOutlined fontSize='inherit' className='text-inherit m-auto' />
       </NavLink>
     </Box>
   )
