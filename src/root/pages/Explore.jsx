@@ -33,16 +33,17 @@ function Explore() {
         </div>
         <div className='flex flex-col items-center'>
           <div className='px-4 pt-12 flex w-full justify-between mb-6'>
-            <Typography variant='h4' component='h3' color='secondary'>Popular</Typography>
+            <Typography variant='h4' component='h3' color='secondary'>{shouldShowSearchResults ? "Search Results" : 'Popular'}</Typography>
             <FilterList color='secondary' sx={{ width: '30px', height: '30px' }} />
           </div>
             <Divider className=' bg-white w-[99%]' />
-          <div className='mt-10'>
+          <div className='mt-10 px-8'>
             {
               shouldShowSearchResults ? <SearchResults isSearchFetching={isSearchFetching} searchedPosts={searchedPosts} /> :
                 shouldShowPosts ? <p className='mb-32 w-96 h-96 bg-white'>End of content</p> :
                   <GridPostList posts={posts} toDisplay={'explore'}/>
             }
+
           </div>
         </div>
         { hasNextPage && !search ?

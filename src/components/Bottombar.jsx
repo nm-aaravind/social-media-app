@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { AddOutlined, BookmarkOutlined, HomeOutlined, SearchOutlined } from '@mui/icons-material';
 function Bottombar() {
   return (
-    <Box bgcolor='primary.light' className='w-full drop-shadow-3xl-inverted h-[4.5rem] fixed bottom-0 flex justify-between'>
+    <Box bgcolor='primary.light' className='w-full drop-shadow-3xl-inverted md:h-[4.5rem] sm:h-[4rem] fixed bottom-0 flex justify-between'>
       <NavLink
         to="/"
         className={({ isActive, isPending }) =>

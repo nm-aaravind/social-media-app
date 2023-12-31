@@ -10,7 +10,7 @@ function Home() {
   const { data: posts, isPending: isFetchingPosts } = useGetRecentPosts()
   const { data: user, isPending: isFetchingUser } = useGetUser();
   return (
-    <Box color='primary' className='w-full home-container flex mb-32 mt-56 '>
+    <Box color='primary' className='w-full home-container mb-32 md:mt-52 sm:mt-48 '>
       <PageHeader heading="Home" />
       {
         isFetchingPosts || !posts || isFetchingUser ? <Loader message={"Hold on while we fetch your feed"}/> : <div className='post-container m-auto'>
