@@ -13,7 +13,7 @@ function RootLayout() {
   //   };
   // }, []);
   return (
-    <Box bgcolor='primary.main' className="w-full md:flex md:flex-col min-h-screen">
+    <Box bgcolor='primary.main' className=" md:flex md:flex-col min-h-screen">
       <Navbar />
       <section className='flex flex-1'>
         <Outlet />

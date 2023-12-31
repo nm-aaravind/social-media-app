@@ -36,7 +36,7 @@ const ProfileForm = ({ user }) => {
     return (
         isPending ? <Loader message="Updating profile"/> : <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(formSubmit)} className='flex flex-col gap-5 mb-16'>
-                <ProfileImageUploader name='file' image={image} setImage={setImage} user_name = {user.name}/>
+                <ProfileImageUploader name='file' image={image} setImage={setImage} user_name = {user.name} currImage={user.profileimageid}/>
 
                 <div className='flex flex-col gap-3 m-4'>
                     <Paper className='drop-shadow-form' square sx={{

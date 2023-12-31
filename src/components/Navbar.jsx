@@ -46,7 +46,7 @@ function Navbar() {
   }
 
   return (
-    <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl w-full'>
+    <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl h-22'>
       <div className={`p-2 xs:w-full xs:px-4 sm:w-[87%] m-auto flex justify-between items-center transition-all`}>
         <Typography variant='h2' component='h1' color='whitesmoke'>
           <Link to={'/'}>Heyo</Link>

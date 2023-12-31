@@ -37,8 +37,8 @@ function Postcard({ post, saves, user }) {
         <Box bgcolor='primary.light' border='1px solid #fff2' className=' w-full lg:w-[45rem] lg:h-[52rem] md:w-[40rem] md:h-[47rem] sm:w-full overflow-hidden drop-shadow-form'>
             <Box borderBottom='1px solid #fff2' className='header w-full sm:h-20 md:h-24 lg:h-28 flex justify-between items-center'>
                 <Link to={`/profile/${post.user?.$id}`} className='float-left flex items-center'>
-                    <img src={post.user?.profileimageurl} className='sm:w-14 md:w-16 lg:w-[4rem] rounded-full ml-9 mr-7'></img>
-                    <p className='sm:text-2xl lg:text-2xl font-varela text-white -ml-3'>{post.user?.username}</p>
+                    <img src={post.user?.profileimageurl} className='sm:w-12 md:w-14 lg:w-14 ml-9 mr-7'></img>
+                    <p className='sm:text-xl md:text-2xl font-varela text-white -ml-3'>{post.user?.username}</p>
                 </Link>
                 {
                     user?.accountid === post?.user.accountid && <button onClick={handleDropDown} className='mr-6 rounded-full p-2 hover:bg-[#333]'>

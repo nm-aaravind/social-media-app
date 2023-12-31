@@ -10,7 +10,7 @@ function CreatePost() {
   return (
     isCreating ? <Loader message='Creating your post' /> : <Box className='flex flex-col w-full items-center'>
     <PageHeader heading="Post something" />
-    <Box className='sm:w-full lg:w-[min(80%,1200px)] mt-52'>
+    <Box className='sm:w-full p-8 lg:w-[min(80%,1200px)] mt-48'>
       <PostForm mode='create' method={createPost}/>
     </Box>
   </Box>
