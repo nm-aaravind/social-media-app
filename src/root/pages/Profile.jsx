@@ -9,7 +9,9 @@ import GridPostList from "../../components/GridPostList";
 const Profile = () => {
   const { id } = useParams();
   const { data: user, isPending } = useGetUser(id);
-  console.log(user, "FEIEIEI");
+  React.useEffect(() => {
+    document.title = "Heyo | Profile";
+  }, []);
   return (
     <Box className="w-full flex justify-center">
       <PageHeader heading="Profile" />
@@ -26,7 +28,7 @@ const Profile = () => {
               <Divider className=" bg-white w-[99%]" />
             </div>
             <div className="px-4">
-            <GridPostList posts={user.posts} toDisplay="profile" />
+              <GridPostList posts={user.posts} toDisplay="profile" />
             </div>
           </div>
         </div>

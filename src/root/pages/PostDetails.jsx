@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
 
 function PostDetails() {
-  return (
-    <div>PostDetails</div>
-  )
+  React.useEffect(() => {
+    document.title = "Heyo | Post Details";
+  }, []);
+  return <div>PostDetails</div>;
 }
 
-export default PostDetails
+export default PostDetails;

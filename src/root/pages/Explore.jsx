@@ -23,6 +23,7 @@ function Explore() {
   const { ref, inView } = useInView();
 
   React.useEffect(() => {
+    document.title = "Heyo | Explore";
     if (inView && !search) fetchNextPage();
   }, [inView, search]);
 
@@ -33,7 +34,6 @@ function Explore() {
     !shouldShowSearchResults &&
     posts.pages.every((item) => item.documents.length === 0);
 
-  console.log(isFetchingPosts, isSearchFetching)
   return (
     <Box bgcolor="primary.main" className="w-full flex flex-col items-center">
       <PageHeader heading="Explore" />
@@ -41,8 +41,10 @@ function Explore() {
         <div className="sm:pt-52 md:pt-60">
           <SearchBar search={search} setSearch={setSearch} />
         </div>
-        {
-        isFetchingPosts ? <Loader /> : <div className="flex flex-col items-center">
+        {isFetchingPosts ? (
+          <Loader />
+        ) : (
+          <div className="flex flex-col items-center">
             <div className="px-4 pt-12 flex w-full justify-between mb-6">
               <Typography variant="h4" component="h3" color="secondary">
                 {shouldShowSearchResults ? "Search Results" : "Popular"}
@@ -66,8 +68,8 @@ function Explore() {
               )}
             </div>
           </div>
-        }
-        { hasNextPage && !search ? (
+        )}
+        {hasNextPage && !search ? (
           <div ref={ref} className="mb-28 -mt-10">
             <Loader />
           </div>

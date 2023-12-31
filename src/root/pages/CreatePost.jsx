@@ -6,6 +6,9 @@ import { Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import PageHeader from "../../components/PageHeader";
 function CreatePost() {
+  React.useEffect(() => {
+    document.title = "Heyo | Post";
+  }, []);
   const { mutateAsync: createPost, isPending: isCreating } = useCreatePost();
   return isCreating ? (
     <Loader message="Creating your post" />
