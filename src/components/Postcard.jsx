@@ -34,7 +34,7 @@ function Postcard({ post, saves, user }) {
         setAnchorEl(null)
     }
     return (
-        <Box bgcolor='primary.light' border='1px solid #fff2' className='lg:w-[45rem] lg:h-[52rem] md:w-[40rem] md:h-[47rem] sm:w-full overflow-hidden drop-shadow-form'>
+        <Box bgcolor='primary.light' border='1px solid #fff2' className='lg:w-[45rem] lg:h-[54rem] md:w-[40rem] md:h-[48rem] sm:w-full overflow-hidden drop-shadow-form'>
             <Box borderBottom='1px solid #fff2' className='header w-full sm:h-20 md:h-24 lg:h-28 flex justify-between items-center'>
                 <Link to={`/profile/${post.user?.$id}`} className='float-left flex items-center'>
                     <img src={post.user?.profileimageurl} className='sm:w-12 md:w-14 lg:w-14 ml-9 mr-7'></img>

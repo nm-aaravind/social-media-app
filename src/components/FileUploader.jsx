@@ -31,7 +31,7 @@ function ProfileImageUploader({ name, mode, image }) {
         register(name, {
             required: {
                 value: mode == 'create' ? true : false,
-                message: "Image required"
+                message: "Image required to post"
             }
         })
         return () => {

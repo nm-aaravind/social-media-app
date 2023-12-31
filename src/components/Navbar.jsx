@@ -46,13 +46,13 @@ function Navbar() {
   }
 
   return (
-    <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl overflow-hidden sm:h-18 md:h-24'>
+    <AppBar position='fixed' sx={{ backgroundColor: 'primary.light' }} className='drop-shadow-3xl overflow-hidden sm:h-20 md:h-24'>
       <div className={`p-2 sm:w-[87%] m-auto flex justify-between items-center transition-all`}>
         <h1 color='whitesmoke' className='sm:text-4xl md:text-6xl font-varela'>
           <Link to={'/'}>Heyo</Link>
         </h1>
         <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} visible transition-all`} onClick={handleDropDown}>
-          <img src={userDetails.imageUrl} alt="profile-image" className='md:w-12 sm:w-9' />
+          <img src={userDetails.imageUrl} alt="profile-image" className='md:w-14 sm:w-11' />
         </button>
         <Menu PaperProps={{
           style: {
