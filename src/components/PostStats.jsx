@@ -16,7 +16,7 @@ import {
   useSavePost,
 } from "../lib/react-query/queries";
 
-function PostStats({ post, userId, forGrid }) {
+function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
   const likesList = post.likes.map((user) => user.$id);
   const { mutateAsync: likePost } = useLikePost();
   const { mutateAsync: savePost, isPending: savePending } = useSavePost();
@@ -69,7 +69,7 @@ function PostStats({ post, userId, forGrid }) {
           )}
         </button>
         {!forGrid && (
-          <button>
+          <button onClick={() => setIsCommentsOpen((prev) => !prev)}>
             <ChatBubbleOutlineOutlined fontSize="inherit" className="w-8 h-7" />
           </button>
         )}

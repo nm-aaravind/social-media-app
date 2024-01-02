@@ -35,10 +35,13 @@ function SignUpForm() {
 
   async function formSubmit(data) {
     try {
+      console.log("Entered")
       const newUser = await signup(data);
       if (!newUser) {
         throw Error;
       }
+      console.log("IIIIII")
+      console.log(newUser, 'DDDDD')
       const session = await signin({
         email: newUser.email,
         password: data.password,

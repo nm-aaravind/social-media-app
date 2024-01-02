@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import UserContext from '../context/userContext'
-import { useSignOut } from '../lib/react-query/queries'
+import { useGetUser, useSignOut } from '../lib/react-query/queries'
 import { styled } from '@mui/system';
 
 const Listbox = styled('ul')(
@@ -21,9 +21,10 @@ const Listbox = styled('ul')(
 );
 
 function Navbar() {
-  const { userDetails } = useContext(UserContext)
+  const { data:user, isPending } = useGetUser();
   const { mutate: signOut, isSuccess } = useSignOut()
   const navigate = useNavigate()
+  console.log(user, "RERERE")
   useEffect(() => {
     if (isSuccess) {
       navigate(0)
@@ -52,7 +53,7 @@ function Navbar() {
           <Link to={'/'}>Heyo</Link>
         </h1>
         <button className={`m-4 hover:scale-110 ${anchorEl ? 'scale-110' : ''} visible transition-all`} onClick={handleDropDown}>
-          <img src={userDetails.imageUrl} alt="profile-image" className='md:w-14 sm:w-11' />
+          <img src={user?.profileimageurl} alt="profile-image" className='md:w-14 sm:w-11' />
         </button>
         <Menu PaperProps={{
           style: {
@@ -67,7 +68,7 @@ function Navbar() {
           },
         }} anchorEl={anchorEl} open={open} onClose={handleDropDownClose} slots={{ listbox: Listbox }}>
           <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', height: '4rem' }} onClick={() => {
-            navigate(`profile/${userDetails.accountid}`)
+            navigate(`profile/${user?.accountid}`)
             handleDropDownClose()
           }}><p className='text-center  w-full'>Profile</p></MenuItem>
           <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', color: '#f73123', height: '4rem' }} onClick={handleSignout}><p className='text-center w-full'>Log out</p></MenuItem>

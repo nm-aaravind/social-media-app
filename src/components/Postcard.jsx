@@ -1,12 +1,13 @@
 import { Menu, MenuItem } from '@mui/material'
-import React, { useContext } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useDeletePost, useGetUser } from '../lib/react-query/queries'
+import { useDeletePost } from '../lib/react-query/queries'
 import PostStats from './PostStats'
 import { Box } from '@mui/material'
 import { MoreVertSharp } from '@mui/icons-material'
 import styled from 'styled-components'
 import Loader from './Loader'
+import CommentsModal from './CommentsModal'
 
 const Listbox = styled('ul')(
     ({ theme }) => `
@@ -24,9 +25,10 @@ const Listbox = styled('ul')(
 
 function Postcard({ post, saves, user }) {
     const [anchorEl, setAnchorEl] = React.useState(null)
-    const open = Boolean(anchorEl)
+    const [isCommentsOpen, setIsCommentsOpen] = React.useState(false)
     const navigate = useNavigate()
     const { mutateAsync: deletePost, isPending: isDeleting } = useDeletePost()
+    const open = Boolean(anchorEl)
     const handleDropDown = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -41,7 +43,7 @@ function Postcard({ post, saves, user }) {
                     <p className='sm:text-xl md:text-2xl font-varela text-white -ml-3'>{post.user?.username}</p>
                 </Link>
                 {
-                    user?.accountid === post?.user.accountid && <button onClick={handleDropDown} className='mr-6 rounded-full p-2 hover:bg-[#333]'>
+                    user?.accountid === post?.user.accountid && <button onClick={handleDropDown} className='mr-6 rounded-full p-2 hover:bg-[#333] transition-all'>
                         <MoreVertSharp fontSize='large' color='secondary' />
                     </button>
                 }
@@ -70,12 +72,13 @@ function Postcard({ post, saves, user }) {
             <div className='w-full overflow-hidden object-fill sm:h-[26rem] md:h-[33rem] lg:h-[36rem] bg-slate-600'>
                 <img src={post.image} className='h-full w-full'></img>
             </div>
-            <PostStats post={post} userId={user?.$id} saves={saves} />
+            <PostStats setIsCommentsOpen={setIsCommentsOpen} post={post} userId={user?.$id} saves={saves} />
             {
                 isDeleting && <div className='absolute grid place-self-center top-0 w-full h-full bg-[#707070bb]'>
                     <Loader message="Deleting" />
                 </div>
             }
+            <CommentsModal postId={post.$id} setIsCommentsOpen={setIsCommentsOpen} open={isCommentsOpen} comments={post.comments.reverse()} />
         </Box>
     )
 }

@@ -5,9 +5,11 @@ import Postcard from "../../components/Postcard";
 import { useGetUser } from "../../lib/react-query/queries";
 import { Box } from "@mui/material";
 import PageHeader from "../../components/PageHeader";
+import { createComment } from "../../lib/appwrite/apis";
 function Home() {
   const { data: posts, isPending: isFetchingPosts } = useGetRecentPosts();
   const { data: user, isPending: isFetchingUser } = useGetUser();
+  console.log(posts)
   React.useEffect(() => {
     document.title = "Heyo | Home";
   }, []);

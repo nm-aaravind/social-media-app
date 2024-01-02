@@ -10,16 +10,6 @@ import PostDetails from './root/pages/PostDetails'
 
 function App() {
 
-    // React.useEffect(() => {
-    //     const initialValue = document.body.style.zoom;
-
-    //     document.body.style.zoom = "67%";
-    
-    //     return () => {
-    //       document.body.style.zoom = initialValue;
-    //     };
-    //   }, []);
-
     return (
         <main>
             <Routes>

@@ -26,6 +26,7 @@ export const UserProvider = ({ children }) => {
     }
     const checkAuth = async () => {
         try {
+            console.log("Entered checkAuth")
             const currentUser = await getUser();
             if (currentUser) {
                 setUserDetails({

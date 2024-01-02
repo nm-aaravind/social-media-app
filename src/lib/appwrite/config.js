@@ -7,7 +7,9 @@ export const config = {
     usersCollection: import.meta.env.VITE_DB_USERS,
     postsCollection: import.meta.env.VITE_DB_POSTS,
     savesCollection: import.meta.env.VITE_DB_SAVES,
-    storageId: import.meta.env.VITE_MEDIA_BUCKET
+    storageId: import.meta.env.VITE_MEDIA_BUCKET,
+    commentsCollection: import.meta.env.VITE_DB_COMMENTS,
+    followersColletion: import.meta.env.VITE_DB_FOLLOWERS
 } 
 export const client = new Client().setEndpoint(config.url).setProject(config.projectId)
 export const account = new Account(client);

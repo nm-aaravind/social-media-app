@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts, likePost, savePost, removeSavedPost, getUser, getSaves, updatePost, deletePost, getInfinitePosts, searchPosts, updateProfile } from '../appwrite/apis'
+import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts, likePost, savePost, removeSavedPost, getUser, getSaves, updatePost, deletePost, getInfinitePosts, searchPosts, updateProfile, createComment, deleteComment, addFollower, getUserById, removeFollower } from '../appwrite/apis'
 
 export const useCreateUser = () => {
     return useMutation({
@@ -33,6 +33,31 @@ export const useGetRecentPosts = () => {
         queryFn: getRecentPosts
     })
 }
+
+export const useCreateComment = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ postId, userId, content  }) => createComment(postId, userId, content),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['getRecentPosts']
+            })
+        }
+    })
+}
+
+export const useDeleteComment = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ commentId  }) => deleteComment(commentId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['getRecentPosts']
+            })
+        }
+    })
+}
+
 export const useLikePost = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -62,6 +87,13 @@ export const useGetUser = () => {
         queryFn: getUser
     })
 }
+export const useGetUserById = ({ accountid }) => {
+    return useQuery({
+        queryKey: ['getUserById', accountid],
+        queryFn: () =>getUserById(accountid),
+        enabled: true
+    })
+}
 export const useSavePost = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -78,6 +110,34 @@ export const useSavePost = () => {
             })
             queryClient.invalidateQueries({
                 queryKey: ['getInfinitePosts']
+            })
+        }
+    })
+}
+export const useAddFollower = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({toFollowId, followingId}) => addFollower(followingId, toFollowId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['getUserById']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['getUser']
+            })
+        }
+    })
+}
+export const useRemoveFollower = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => removeFollower(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['getUser']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['getUserById']
             })
         }
     })

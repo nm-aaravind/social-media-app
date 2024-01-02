@@ -2,12 +2,13 @@ import { ID } from "appwrite";
 import { config, avatars, account, databases, storage } from "./config";
 import { Query, Permission, Role } from "appwrite";
 export async function createAccount(user) {
-
     try {
+        console.log("PPPPP")
         const newAccount = await account.create(ID.unique(), user.email, user.password, user.name)
         if (!newAccount) {
             throw Error
         }
+        console.log("TTTTTTTTTTTTTTTT")
         const profilePic = avatars.getInitials(newAccount.name)
         const newUserInDB = await saveUserToDB({
             name: newAccount.name,
@@ -16,6 +17,7 @@ export async function createAccount(user) {
             profileimageurl: profilePic,
             accountid: newAccount.$id,
         })
+        console.log(newUser, "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPpp")
         return newUserInDB;
     } catch (error) {
         console.log(error)
@@ -28,7 +30,10 @@ export async function saveUserToDB(user) {
             config.databaseId,
             config.usersCollection,
             ID.unique(),
-            user
+            user,
+            [
+                Permission.read(Role.any()),  
+            ]
         )
         return newUser
     } catch (error) {
@@ -39,6 +44,7 @@ export async function saveUserToDB(user) {
 
 export async function signIn(user) {
     try {
+        console.log(user, "DEIDIEII")
         const session = await account.createEmailSession(user.email, user.password)
         return session;
     } catch (error) {
@@ -68,6 +74,36 @@ export async function getSaves(userId) {
         console.log(error)
     }
 }
+function checkUserPermissions(account) {
+    // You can implement your own logic to check user permissions based on account details
+    // For example, check if the user has a specific role or attribute
+
+    // Replace the following condition with your own logic
+    console.log(account, "Roles")
+    if (account.roles.includes("admin")) {
+        return true;
+    }
+
+    return false;
+}
+
+export async function getUserById(id){
+    try {
+        console.log("Fired", id)
+        const currentUser = await databases.listDocuments(
+            config.databaseId,
+            config.usersCollection,
+            [Query.equal('accountid', id)]
+        )
+        if (!currentUser.documents || currentUser.documents.length === 0) {
+            throw new Error("User not found");
+        }
+        return currentUser.documents[0]
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
 
 export async function getUser() {
     try {
@@ -77,8 +113,8 @@ export async function getUser() {
             config.usersCollection,
             [Query.equal('accountid', currentAccount.$id)]
         )
-        if (!currentUser) {
-            throw Error
+        if (!currentUser.documents || currentUser.documents.length === 0) {
+            throw new Error("User not found");
         }
         return currentUser.documents[0]
     } catch (error) {
@@ -118,7 +154,10 @@ export async function createPost(data) {
                 image: filePreview,
                 imageId: uploadedFile.$id,
                 location: data.location
-            }
+            },
+            [
+                Permission.read(Role.any()),  
+            ]
         )
 
         if (!createdPost) {
@@ -146,6 +185,76 @@ export async function getRecentPosts() {
             throw Error
         }
         return recentPosts.documents
+    } catch (error) {
+        console.log(error)
+        throw Error
+    }
+}
+
+export async function deleteComment(commentId){
+    try {
+        const deleteComment = await databases.deleteDocument(
+            config.databaseId,
+            config.commentsCollection,
+            commentId
+        )
+        return { status: 'ok' }
+    } catch (error) {
+        console.log(error)
+        throw Error("Cannot delete comment")
+    }
+}
+
+export async function addFollower(followingId, toFollowId){
+    try {
+        const follow = await databases.createDocument(
+            config.databaseId,
+            config.followersColletion,
+            ID.unique(),
+            {
+                toFollow: toFollowId,
+                following: followingId
+            }
+        )
+        if(!follow){
+            throw Error("Cannot add follower")
+        }
+        console.log("HOHOHOHOHOHOHOHOHOHOHOHO")
+        return follow;
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
+
+export async function removeFollower(id){
+    try {
+        const removedfollow = await databases.deleteDocument(
+            config.databaseId,
+            config.followersColletion,
+            id
+        )
+        if(!removedfollow) throw Error("Cannot remove follower")
+        return { status: 'ok' }
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
+
+export async function createComment(postId, userId, content){
+    try {
+        const comment = await databases.createDocument(
+            config.databaseId,
+            config.commentsCollection,
+            ID.unique(),
+            {
+                content: content,
+                post: postId,
+                user: userId
+            }
+        )
+        console.log(comment, "Made comment")
     } catch (error) {
         console.log(error)
     }
