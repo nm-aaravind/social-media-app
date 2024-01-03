@@ -1,23 +1,20 @@
 import { ID } from "appwrite";
 import { config, avatars, account, databases, storage } from "./config";
-import { Query, Permission, Role } from "appwrite";
+import { Query, Permission, Role } from "appwrite"
 export async function createAccount(user) {
     try {
-        console.log("PPPPP")
         const newAccount = await account.create(ID.unique(), user.email, user.password, user.name)
         if (!newAccount) {
-            throw Error
+            throw Error("Cannot add user to auth")
         }
-        console.log("TTTTTTTTTTTTTTTT")
         const profilePic = avatars.getInitials(newAccount.name)
         const newUserInDB = await saveUserToDB({
-            name: newAccount.name,
+            name: user.name,
             username: user.username,
-            email: newAccount.email,
+            email: user.email,
             profileimageurl: profilePic,
             accountid: newAccount.$id,
         })
-        console.log(newUser, "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPpp")
         return newUserInDB;
     } catch (error) {
         console.log(error)
@@ -30,9 +27,15 @@ export async function saveUserToDB(user) {
             config.databaseId,
             config.usersCollection,
             ID.unique(),
-            user,
+            {
+                accountid: user.accountid,
+                name: user.name,
+                email: user.email,
+                profileimageurl: user.profileimageurl,
+                username: user.username
+            },
             [
-                Permission.read(Role.any()),  
+                Permission.write(Role.any()),
             ]
         )
         return newUser
@@ -44,11 +47,11 @@ export async function saveUserToDB(user) {
 
 export async function signIn(user) {
     try {
-        console.log(user, "DEIDIEII")
         const session = await account.createEmailSession(user.email, user.password)
         return session;
     } catch (error) {
         console.log(error)
+        throw error
     }
 }
 
@@ -58,7 +61,7 @@ export async function signOut() {
         return session
     } catch (error) {
         console.log(error)
-        return error
+        throw error
     }
 }
 
@@ -74,20 +77,8 @@ export async function getSaves(userId) {
         console.log(error)
     }
 }
-function checkUserPermissions(account) {
-    // You can implement your own logic to check user permissions based on account details
-    // For example, check if the user has a specific role or attribute
 
-    // Replace the following condition with your own logic
-    console.log(account, "Roles")
-    if (account.roles.includes("admin")) {
-        return true;
-    }
-
-    return false;
-}
-
-export async function getUserById(id){
+export async function getUserById(id) {
     try {
         console.log("Fired", id)
         const currentUser = await databases.listDocuments(
@@ -121,16 +112,6 @@ export async function getUser() {
         console.log(error)
     }
 }
-export async function getEmailFromUsername(username) {
-    try {
-        const user = await databases.listDocuments(config.databaseId,
-            config.usersCollection, [
-            Query.equal('username', username),
-        ])
-    } catch (error) {
-
-    }
-}
 export async function createPost(data) {
     try {
         const uploadedFile = await uploadFileToStorage(data.file[0])
@@ -156,7 +137,7 @@ export async function createPost(data) {
                 location: data.location
             },
             [
-                Permission.read(Role.any()),  
+                Permission.read(Role.any()),
             ]
         )
 
@@ -176,6 +157,7 @@ async function deleteFile(fileId) {
         return { status: 'ok' }
     } catch (error) {
         console.log(error)
+        throw error
     }
 }
 export async function getRecentPosts() {
@@ -191,7 +173,7 @@ export async function getRecentPosts() {
     }
 }
 
-export async function deleteComment(commentId){
+export async function deleteComment(commentId) {
     try {
         const deleteComment = await databases.deleteDocument(
             config.databaseId,
@@ -205,7 +187,7 @@ export async function deleteComment(commentId){
     }
 }
 
-export async function addFollower(followingId, toFollowId){
+export async function addFollower(followingId, toFollowId) {
     try {
         const follow = await databases.createDocument(
             config.databaseId,
@@ -216,7 +198,7 @@ export async function addFollower(followingId, toFollowId){
                 following: followingId
             }
         )
-        if(!follow){
+        if (!follow) {
             throw Error("Cannot add follower")
         }
         console.log("HOHOHOHOHOHOHOHOHOHOHOHO")
@@ -227,14 +209,14 @@ export async function addFollower(followingId, toFollowId){
     }
 }
 
-export async function removeFollower(id){
+export async function removeFollower(id) {
     try {
         const removedfollow = await databases.deleteDocument(
             config.databaseId,
             config.followersColletion,
             id
         )
-        if(!removedfollow) throw Error("Cannot remove follower")
+        if (!removedfollow) throw Error("Cannot remove follower")
         return { status: 'ok' }
     } catch (error) {
         console.log(error)
@@ -242,7 +224,7 @@ export async function removeFollower(id){
     }
 }
 
-export async function createComment(postId, userId, content){
+export async function createComment(postId, userId, content) {
     try {
         const comment = await databases.createDocument(
             config.databaseId,
@@ -354,19 +336,25 @@ export async function removeSavedPost(savedPostId) {
 
 export async function updatePost(data) {
     const fileToUpdate = data.file.length ? true : false
+    console.log(data)
     try {
+        let filePreview = null
+        let uploadedFile = null
         if (fileToUpdate) {
-            const uploadedFile = await uploadFileToStorage(data.file[0])
+             uploadedFile = await uploadFileToStorage(data.file[0])
             if (!uploadedFile) {
                 throw Error("Error uploading to storage")
             }
-            const filePreview = getFilePreview(uploadedFile.$id)
+             filePreview = getFilePreview(uploadedFile.$id)
             if (!filePreview) {
                 deleteFile(uploadedFile.$id)
-                throw Error
+                throw Error("Error in image retrieval")
             }
-            const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
-            const updatedPost = await databases.updateDocument(
+        }
+        const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
+        let updatedPost = null
+        if (fileToUpdate) {
+             updatedPost = await databases.updateDocument(
                 config.databaseId,
                 config.postsCollection,
                 data.postId,
@@ -378,17 +366,34 @@ export async function updatePost(data) {
                     location: data.location
                 }
             )
-            if (!updatedPost && fileToUpdate) {
-                await deleteFile(uploadedFile.$id)
-                throw Error("Cannot update post")
-            }
-            if (fileToUpdate) {
+        }
+        else {
+            updatedPost = await databases.updateDocument(
+                config.databaseId,
+                config.postsCollection,
+                data.postId,
+                {
+                    caption: data.caption,
+                    tags: tags,
+                    location: data.location
+                }
+            )
+        }
+        console.log(!updatedPost, "MAMAMAM")
+        if(updatedPost){
+            if(fileToUpdate){
                 await deleteFile(data.imageId)
-                return updatedPost;
             }
+            return updatedPost
+        }
+        if (!updatedPost){
+            if(fileToUpdate){
+                await deleteFile(uploadedFile.$id)
+            }
+            throw Error("Cannot update post")
         }
     } catch (error) {
-        console.log(error)
+        throw error
     }
 }
 
@@ -458,8 +463,13 @@ export async function updateProfile(userId, name, username, bio, file, image, cu
                 deleteFile(uploadedFile.$id)
                 throw Error
             }
-        }else{
-            imageURL = image
+        } else {
+            if(currImage){
+                imageURL = image
+            }
+            else{
+                imageURL = avatars.getInitials(name)
+            }
         }
         const updatedPost = await databases.updateDocument(
             config.databaseId,

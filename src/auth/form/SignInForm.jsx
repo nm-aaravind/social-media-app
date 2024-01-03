@@ -7,9 +7,9 @@ import FormControl from "@mui/material/FormControl";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSignIn } from "../../lib/react-query/queries";
+import { useOutletContext } from "react-router-dom";
 import {
   Paper,
-  InputBase,
   Button,
   Typography,
   InputAdornment,
@@ -19,21 +19,21 @@ import {
   TextField,
 } from "@mui/material";
 import UserContext from "../../context/userContext";
-import { getEmailFromUsername } from "../../lib/appwrite/apis";
 
 function SignInForm() {
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const [showToast] = useOutletContext();
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
-  const { mutateAsync: signin } = useSignIn();
-  const { checkAuth, isLoading, setIsLoading } = useContext(UserContext);
+  const { mutateAsync: signin, isPending: isSigningIn } = useSignIn();
+  const { checkAuth } = useContext(UserContext);
   const navigate = useNavigate();
-
+  
   async function formSubmit(data) {
     try {
       const session = await signin({
@@ -46,12 +46,12 @@ function SignInForm() {
         throw Error;
       }
       if (checkAuth()) {
+        showToast('success', "Signed in successfully")
         reset();
         navigate("/");
       }
     } catch (error) {
-      console.log("Sign in failed");
-      console.log(error);
+      showToast('error', `Cannot sign in: ${error.message}`)
       throw Error;
     }
   }
@@ -181,7 +181,6 @@ function SignInForm() {
               color="red"
               marginTop={"-32px"}
               marginBottom={"8px"}
-              font
             >
               {errors.password?.message}
             </Typography>
@@ -189,6 +188,7 @@ function SignInForm() {
           <Button
             type="submit"
             variant="outlined"
+            disabled={isSigningIn}
             sx={{
               border: "1px solid #ebe8e888",
               fontSize: "18px",
@@ -196,6 +196,10 @@ function SignInForm() {
               borderRadius: 0,
               boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
               color: "white",
+              ":disabled":{
+                color: 'white',
+                 backgroundColor: 'primary.light'
+              },
               ":hover": {
                 backgroundColor: "green",
                 border: "green",
@@ -204,7 +208,9 @@ function SignInForm() {
             }}
             className="drop-shadow-form-field"
           >
-            Sign In
+            {
+              isSigningIn ? "Signing in" : "sign in"
+            }
           </Button>
         </form>
         <Typography

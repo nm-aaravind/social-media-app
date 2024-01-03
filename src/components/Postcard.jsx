@@ -43,7 +43,7 @@ function Postcard({ post, saves, user }) {
                     <p className='sm:text-xl md:text-2xl font-varela text-white -ml-3'>{post.user?.username}</p>
                 </Link>
                 {
-                    user?.accountid === post?.user.accountid && <button onClick={handleDropDown} className='mr-6 rounded-full p-2 hover:bg-[#333] transition-all'>
+                    user?.accountid === post.user?.accountid && <button onClick={handleDropDown} className='mr-6 rounded-full p-2 hover:bg-[#333] transition-all'>
                         <MoreVertSharp fontSize='large' color='secondary' />
                     </button>
                 }
@@ -56,7 +56,6 @@ function Postcard({ post, saves, user }) {
                         borderRadius: '0px',
                         minWidth: '200px',
                         boxShadow: '0px 10px 5px rgba(0,0,0,0.6)'
-                        // Set your desired margin value here
                     },
                 }} anchorEl={anchorEl} open={open} onClose={handleDropDownClose} slots={{ listbox: Listbox }}>
                     <MenuItem sx={{ '&:hover': { backgroundColor: '#333' }, fontSize: '1.4rem', height: '4rem' }} onClick={() => {

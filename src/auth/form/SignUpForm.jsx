@@ -5,7 +5,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -28,20 +28,19 @@ function SignUpForm() {
 
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
-  const { mutateAsync: signup } = useCreateUser();
+  const { mutateAsync: signup, isPending: isCreatingUser } = useCreateUser();
   const { mutateAsync: signin } = useSignIn();
-  const { checkAuth, isLoading, setIsLoading } = useContext(UserContext);
+  const { checkAuth } = useContext(UserContext);
   const navigate = useNavigate();
+  const [showToast] = useOutletContext();
 
   async function formSubmit(data) {
     try {
-      console.log("Entered")
       const newUser = await signup(data);
+      console.log(newUser, "DEI CULPRIT")
       if (!newUser) {
-        throw Error;
+        throw Error("Cannot sign up");
       }
-      console.log("IIIIII")
-      console.log(newUser, 'DDDDD')
       const session = await signin({
         email: newUser.email,
         password: data.password,
@@ -52,12 +51,13 @@ function SignUpForm() {
       }
       if (checkAuth()) {
         reset();
+        showToast("success", "Signup up successfully !")
         navigate("/");
       }
     } catch (error) {
-      console.log("Sign in failed");
+      showToast("error", error.message)
       console.log(error);
-      throw Error;
+      throw error;
     }
   }
   return (
@@ -275,6 +275,7 @@ function SignUpForm() {
             </Typography>
           )}
           <Button
+            disabled={isCreatingUser}
             type="submit"
             variant="outlined"
             color="secondary"
@@ -300,7 +301,7 @@ function SignUpForm() {
           fontSize="23px"
           marginY={"40px"}
         >
-          Already have an account?{" "}
+          Already have an account?
           <Link
             className="underline-offset-4 text-white underline"
             to={"/signin"}

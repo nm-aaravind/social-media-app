@@ -8,8 +8,8 @@ import PageHeader from "../../components/PageHeader";
 import { createComment } from "../../lib/appwrite/apis";
 function Home() {
   const { data: posts, isPending: isFetchingPosts } = useGetRecentPosts();
-  const { data: user, isPending: isFetchingUser } = useGetUser();
-  console.log(posts)
+  const { data: user, isPending: isFetchingUser, isError } = useGetUser();
+  
   React.useEffect(() => {
     document.title = "Heyo | Home";
   }, []);

@@ -18,7 +18,7 @@ const Profile = () => {
     <Box className="w-full flex justify-center">
       <PageHeader heading="Profile" />
       {isFetchingUser || isFetchingCurrentUser ? (
-        <Loader />
+        <Loader message="Fetching user details"/>
       ) : (
         <div className="sm:w-full xl:w-[85%] sm:px-12 md:px-14 flex flex-col gap-10 pt-52">
           <ProfileCard userToDisplay={user} currentUser={loggedInUser} />

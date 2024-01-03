@@ -1,7 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+:root{
+    --toastify-color-error: #e74c3c;
+}
+.Toastify__toast-container {
+    background-color: yello;
+}
 .dropdown{
     min-width: 200px;
     position: absolute;

@@ -1,10 +1,11 @@
 import { Edit, PersonAdd, PersonRemove } from "@mui/icons-material";
 import { Box, Typography, Button, Divider, useRadioGroup } from "@mui/material";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useAddFollower, useRemoveFollower } from "../lib/react-query/queries";
 const ProfileCard = ({ userToDisplay, currentUser }) => {
   const { mutateAsync: addFollower, isPending: isAddingFollower } = useAddFollower()
+  const [showToast] = useOutletContext()
   const { mutateAsync: removeFollower, isPending: isRemovingFollower } = useRemoveFollower()
   let follow_object = null;
   console.log(userToDisplay, currentUser)
@@ -18,9 +19,12 @@ const ProfileCard = ({ userToDisplay, currentUser }) => {
   async function addFollowerHandler(){
     try {
       const follow = await addFollower({ toFollowId: userToDisplay.$id  , followingId: currentUser.$id })
-      if(!follow) throw Error('Cannot follow')
+      if(!follow){
+        throw Error('Cannot follow')
+      }
+      showToast("success", "Followed")
     } catch (error) {
-      console.log(error)
+      showToast("error", `Error: ${error.message}`)
       throw error
     }
   }
@@ -28,9 +32,9 @@ const ProfileCard = ({ userToDisplay, currentUser }) => {
     try {
       const {status} = await removeFollower(follow_object.$id);
       if(status != 'ok') throw Error("Cannot unfollow")
-
-    } catch (error) {
-      console.log(error)
+      showToast("success", "Unfollowed")
+  } catch (error) {
+      showToast("error", `Error: ${error.message}`)
       throw error
     }
   }
@@ -45,7 +49,7 @@ const ProfileCard = ({ userToDisplay, currentUser }) => {
       <div className="flex flex-col flex-wrap p-20 gap-10 w-full">
         <div className="flex gap-16 flex-wrap sm:justify-center sm:gap-10 md:justify-normal lg:gap-12">
           <img
-            className="lg:w-36 xs:w-20 md:w-32"
+            className="lg:w-40 xs:w-20 md:w-36"
             src={userToDisplay?.profileimageurl}
           ></img>
           <div className="">

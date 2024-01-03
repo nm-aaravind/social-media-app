@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { Paper, Typography, Button, TextField } from "@mui/material";
 import { useUpdateProfile } from "../lib/react-query/queries";
@@ -19,6 +19,7 @@ const ProfileForm = ({ user }) => {
     },
   });
   const { mutateAsync: updateProfile, isPending } = useUpdateProfile();
+  const [showToast] = useOutletContext()
 
   async function formSubmit(data) {
     try {
@@ -33,9 +34,11 @@ const ProfileForm = ({ user }) => {
       }
       console.log(updatedProfile, "After updatings");
       updateContext(updatedProfile);
+      showToast('success', "Updated profile successfully !")
       return navigate(`/profile/${user.accountid}`);
     } catch (error) {
-      console.log(error);
+      showToast("error", `Error: ${error.message}`)
+      throw error
     }
   }
   return isPending ? (

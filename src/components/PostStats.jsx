@@ -88,7 +88,9 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
         </button>
       </div>
       <p className="text-white text-ellipsis text-lg font-varela overflow-hidden line-clamp-2 mt-1 whitespace-nowrap sm:text-md md:text-2xl mb-5">
-        <span className={`${forGrid && "pb-2"}`}>{post.user.username}</span>{" "}
+        <span className={`${forGrid && "pb-2"} text-white/75 mr-3`}>
+          {post.user.username}
+        </span>
         {!forGrid && post.caption}
       </p>
       {!forGrid && (

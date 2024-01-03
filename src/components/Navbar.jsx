@@ -20,16 +20,19 @@ const Listbox = styled('ul')(
   `,
 );
 
-function Navbar() {
+function Navbar({ showToast }) {
   const { data:user, isPending } = useGetUser();
-  const { mutate: signOut, isSuccess } = useSignOut()
+  const { mutate: signOut, isSuccess, isError } = useSignOut()
   const navigate = useNavigate()
-  console.log(user, "RERERE")
   useEffect(() => {
     if (isSuccess) {
+      showToast('success', "Signed out !")
       navigate(0)
     }
-  }, [isSuccess])
+    if(isError){
+      showToast("error", "Error signing out")
+    }
+  }, [isSuccess, isError])
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)

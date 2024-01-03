@@ -2,11 +2,12 @@ import React, { useContext } from "react";
 import { TextField, Typography, Paper, Button } from "@mui/material";
 import FileUploader from "./FileUploader";
 import { FormProvider, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import UserContext from "../context/userContext";
 
 function PostForm({ post, mode, method }) {
   const { userDetails } = useContext(UserContext);
+  const [showToast] = useOutletContext()
   const navigate = useNavigate();
   const methods = useForm({
     defaultValues: {
@@ -19,32 +20,32 @@ function PostForm({ post, mode, method }) {
 
   const { errors } = methods.formState;
 
-  console.log(errors);
-
   async function formSubmit(data) {
     try {
       if (mode == "create") {
         console.log("Create");
         const createdPost = await method({ ...data, user: userDetails });
         if (!createdPost) {
-          throw Error;
+          throw Error("Cannot create post");
         }
+        showToast('success', "Created post successfully")
         navigate("/");
       } else if (mode == "update") {
-        console.log(data);
+        console.log(data)
         const updatePost = await method({
           ...data,
           postId: post.$id,
           imageId: post.imageId,
         });
-        console.log(updatePost, "Finally out");
         if (!updatePost) {
           throw Error("Cannot update post");
         }
+        showToast('success', "Updated post successfully")
         return navigate(`/update-post/${post.$id}`);
       }
     } catch (error) {
-      console.log(error);
+      showToast('error', `Error: ${error.message}`)
+      throw error
     }
   }
   return (
