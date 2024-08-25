@@ -1,39 +1,70 @@
-import React, { useContext } from "react";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { makeStyles } from "@mui/styles";
+
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSignIn } from "../../lib/react-query/queries";
 import { useOutletContext } from "react-router-dom";
-import {
-  Paper,
-  Button,
-  Typography,
-  InputAdornment,
-  Box,
-  FilledInput,
-  Divider,
-  TextField,
-} from "@mui/material";
+import { Button, Typography, Box, TextField } from "@mui/material";
 import UserContext from "../../context/userContext";
 
-function SignInForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const [showToast] = useOutletContext();
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+const useStyles = makeStyles(({ palette }) => ({
+  root: {
+    height: "100%",
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+  },
+  formContainer: {
+    width: "clamp(350px,50%,800px)",
+    display: "flex",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "10px",
+    overflow: "hidden",
+    backgroundColor: "white",
+  },
+  form: {
+    margin: "10px 0",
+    textAlign: "center",
+    padding: "2rem",
+    width: "50%",
+    "@media (max-width: 1200px)": {
+      width: "100%",
+    },
+  },
+  imageContainer: {
+    "@media (max-width: 1200px)": {
+      display: "none",
+    },
+    backgroundSize: "cover",
+    width: "50%",
+    backgroundImage: "url(/assets/auth-image.jpg)",
+  },
+  error: {
+    width: "100%",
+    color: "red",
+    textAlign: "left",
+  },
+  heading: {
+    color: palette.primary.main,
+  },
+  content: {
+    textDecoration: "underline",
+    textUnderlineOffset: "2px",
+  },
+}));
 
+function SignInForm() {
+  const classes = useStyles();
+  const [showToast] = useOutletContext();
+  const navigate = useNavigate()
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
   const { mutateAsync: signin, isPending: isSigningIn } = useSignIn();
   const { checkAuth } = useContext(UserContext);
-  const navigate = useNavigate();
-  
+
   async function formSubmit(data) {
     try {
       const session = await signin({
@@ -46,51 +77,23 @@ function SignInForm() {
         throw Error;
       }
       if (checkAuth()) {
-        showToast('success', "Signed in successfully")
+        showToast("success", "Signed in successfully");
         reset();
         navigate("/");
       }
     } catch (error) {
-      showToast('error', `Cannot sign in: ${error.message}`)
+      showToast("error", error.message);
       throw Error;
     }
   }
   return (
-    <>
-      <Box
-        border="1px solid #fff2"
-        bgcolor="primary.light"
-        component="div"
-        className="flex flex-col h-fit sm:w-[85%] md:w-[60%] lg:w-[min(50%,600px)] xl:w-[min(50%,600px)] items-center m-auto drop-shadow-form"
-      >
-        <Typography
-          variant="h3"
-          component="h2"
-          color="whitesmoke"
-          marginY="20px"
-        >
-          Sign In
-        </Typography>
-        <Divider
-          style={{
-            backgroundColor: "#fff4",
-            height: "1px",
-            width: "100%",
-            marginBottom: "45px",
-          }}
-        />
-        <form
-          noValidate
-          onSubmit={handleSubmit(formSubmit)}
-          method="post"
-          className="flex flex-col w-3/4 m-auto self-center"
-        >
-          <Paper
-            square
-            elevation={1}
-            sx={{ marginBottom: "40px", backgroundColor: "#494949" }}
-            className="drop-shadow-form-field"
-          >
+    <Box className={classes.root}>
+      <Box className={classes.formContainer}>
+        <Box className={classes.form}>
+          <form noValidate onSubmit={handleSubmit(formSubmit)} method="post">
+            <Typography className={classes.heading} variant="h4" gutterBottom>
+              Sign In
+            </Typography>
             <TextField
               {...register("email", {
                 pattern: {
@@ -99,136 +102,62 @@ function SignInForm() {
                 },
                 required: {
                   value: true,
-                  message: "Email id required",
+                  message: "Email required",
                 },
               })}
               name="email"
               id="outlined-basic"
               label="Email"
               autoComplete="off"
-              variant="filled"
-              color="secondary"
+              variant="outlined"
               fullWidth
-              autoFocus
-              inputProps={{
-                style: { fontSize: 22, margin: "auto", color: "whitesmoke" },
-              }} // font size of input text
-              InputLabelProps={{ style: { fontSize: 22, color: "#ebe8e8aa" } }}
+              margin="normal"
             />
-          </Paper>
-          {errors.email && (
-            <Typography
-              component="p"
-              variant="h6"
-              fontFamily={"Varela Round"}
-              color="red"
-              marginTop={"-32px"}
-              marginBottom={"8px"}
-              font
+            {errors.email && (
+              <Typography className={classes.error}>
+                {errors.email?.message}
+              </Typography>
+            )}
+            <TextField
+              {...register("password", {
+                required: {
+                  value: true,
+                  message: "Password is required",
+                },
+              })}
+              name="password"
+              autoComplete="off"
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+            />
+            {errors.password && (
+              <Typography className={classes.error}>
+                {errors.password?.message}
+              </Typography>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: "1.5rem", padding: "10px 0" }}
+              type="submit"
             >
-              {errors.email?.message}
-            </Typography>
-          )}
-          <Paper
-            square={true}
-            elevation={2}
-            sx={{ marginBottom: "40px", backgroundColor: "#494949" }}
-            className="drop-shadow-form-field"
-          >
-            <FormControl variant="filled" color="secondary" fullWidth>
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ fontSize: 22, color: "#ebe8e8aa" }}
-              >
-                Password
-              </InputLabel>
-              <FilledInput
-                {...register("password", {
-                  required: {
-                    value: true,
-                    message: "Password is required",
-                  },
-                })}
-                name="password"
-                autoComplete="off"
-                id="outlined-adornment-password"
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{ color: "#ebe8e8aa" }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-                inputProps={{
-                  style: { fontSize: 23, margin: "auto", color: "whitesmoke" },
-                }} // font size of input text
-              />
-            </FormControl>
-          </Paper>
-          {errors.password && (
+              Sign In
+            </Button>
             <Typography
-              variant="h6"
-              component="p"
-              fontFamily={"Varela Round"}
-              color="red"
-              marginTop={"-32px"}
-              marginBottom={"8px"}
+              style={{ marginTop: "1.3rem" }}
+              className={classes.content}
             >
-              {errors.password?.message}
+              New user? <Link to={"/signup"}>Sign Up</Link>
             </Typography>
-          )}
-          <Button
-            type="submit"
-            variant="outlined"
-            disabled={isSigningIn}
-            sx={{
-              border: "1px solid #ebe8e888",
-              fontSize: "18px",
-              height: "49px",
-              borderRadius: 0,
-              boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-              color: "white",
-              ":disabled":{
-                color: 'white',
-                 backgroundColor: 'primary.light'
-              },
-              ":hover": {
-                backgroundColor: "green",
-                border: "green",
-                color: "#ebe8e888",
-              },
-            }}
-            className="drop-shadow-form-field"
-          >
-            {
-              isSigningIn ? "Signing in" : "sign in"
-            }
-          </Button>
-        </form>
-        <Typography
-          sx={{ color: "#ebe8e8aa" }}
-          component="p"
-          fontSize="25px"
-          marginY="40px"
-        >
-          New user?{" "}
-          <Link
-            className="text-[#ebe8e8] underline-offset-4 underline"
-            to={"/signup"}
-          >
-            Sign Up
-          </Link>
-        </Typography>
+          </form>
+        </Box>
+        <Box className={classes.imageContainer} />
       </Box>
-    </>
+    </Box>
   );
 }
 

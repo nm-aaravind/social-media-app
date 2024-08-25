@@ -16,7 +16,7 @@ export default {
           'form-field': '0px 5px 5px rgba(0,0,0,0.5)'
       },
       fontFamily: {
-        'varela': ['Varela Round', 'sans-serif']
+        'varela': ["'Exo 2'", 'serif']
       }
     },
   },

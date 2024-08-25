@@ -1,17 +1,9 @@
 import React, { useContext } from "react";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
 import {
   Box,
   Typography,
-  Divider,
-  Paper,
-  FilledInput,
   Button,
   TextField,
 } from "@mui/material";
@@ -19,16 +11,63 @@ import { useForm } from "react-hook-form";
 import { useCreateUser, useSignIn } from "../../lib/react-query/queries";
 import UserContext from "../../context/userContext";
 
-function SignUpForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+const useStyles = makeStyles(({ palette }) => ({
+  root: {
+    "@media (min-width: 400px)": {
+      paddingTop: "50px"
+    },
+    height: "100%",
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+  },
+  formContainer: {
+    width: "clamp(350px,50%,800px)",
+    display: "flex",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "10px",
+    overflow: "hidden",
+    backgroundColor: "white",
+  },
+  form: {
+    margin: "10px 0",
+    textAlign: "center",
+    padding: "2rem",
+    width: "50%",
+    "@media (max-width: 1200px)": {
+      width: "100%",
+    },
+  },
+  imageContainer: {
+    "@media (max-width: 1200px)": {
+      display: "none",
+    },
+    backgroundSize: "cover",
+    width: "50%",
+    backgroundImage: "url(/assets/auth-image.jpg)",
+  },
+  error: {
+    width: "100%",
+    color: "red",
+    textAlign: "left",
+  },
+  heading: {
+    color: palette.primary.main,
+  },
+  content: {
+    textDecoration: "underline",
+    textUnderlineOffset: "2px",
+  },
+}));
 
+function SignUpForm() {
+  const classes = useStyles();
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
-  const { mutateAsync: signup, isPending: isCreatingUser } = useCreateUser();
+  const { mutateAsync: signup, isPending: isCreatingUser, data, isError, error } = useCreateUser();
+  console.log(isError, error)
   const { mutateAsync: signin } = useSignIn();
   const { checkAuth } = useContext(UserContext);
   const navigate = useNavigate();
@@ -37,7 +76,6 @@ function SignUpForm() {
   async function formSubmit(data) {
     try {
       const newUser = await signup(data);
-      console.log(newUser, "DEI CULPRIT")
       if (!newUser) {
         throw Error("Cannot sign up");
       }
@@ -51,49 +89,27 @@ function SignUpForm() {
       }
       if (checkAuth()) {
         reset();
-        showToast("success", "Signup up successfully !")
+        showToast("success", "Signed up successfully!");
         navigate("/");
       }
     } catch (error) {
-      showToast("error", error.message)
+      if (error.type == 'general_argument_invalid'){
+        showToast('error', 'Password should be between 8 to 256 characters')
+      }
       console.log(error);
       throw error;
     }
   }
   return (
-    <>
-      <Box
-        border="1px solid #fff2"
-        bgcolor="primary.light"
-        component="div"
-        className=" flex drop-shadow-form flex-col h-fit sm:w-[85%] md:w-[60%] lg:w-[min(50%,600px)] xl:w-[min(50%,600px)] items-center m-auto"
-      >
-        <Typography
-          variant="h3"
-          component="h2"
-          color="whitesmoke"
-          marginY="20px"
-        >
-          Sign Up
-        </Typography>
-        <Divider
-          style={{
-            backgroundColor: "#fff4",
-            height: "1px",
-            width: "100%",
-            marginBottom: "45px",
-          }}
-        />
-        <form
-          method="post"
-          onSubmit={handleSubmit(formSubmit)}
-          className="flex flex-col w-3/4 m-auto self-center"
-        >
-          <Paper
-            elevation={1}
-            sx={{ marginBottom: "40px", backgroundColor: "#494949" }}
-          >
-            <TextField
+      <Box className={classes.root}>
+        <Box className={classes.formContainer}>
+          <Box className={classes.form}>
+            <form noValidate onSubmit={handleSubmit(formSubmit)} method="post">
+              <Typography className={classes.heading} variant="h4" gutterBottom>
+                Sign Up
+              </Typography>
+
+              <TextField
               {...register("name", {
                 required: {
                   value: true,
@@ -108,209 +124,108 @@ function SignUpForm() {
               id="name"
               label="Name"
               autoComplete="off"
-              variant="filled"
-              color="secondary"
+              variant="outlined"
               fullWidth
               autoFocus
-              inputProps={{ style: { fontSize: 22, color: "whitesmoke" } }}
-              InputLabelProps={{ style: { fontSize: 20, color: "#ebe8e8aa" } }}
-            />
-          </Paper>
-          {errors.name && (
-            <Typography
-              variant="h6"
-              component="p"
-              fontFamily={"Varela Round"}
-              color="red"
-              marginTop={"-32px"}
-              marginBottom={"8px"}
-            >
-              {errors.name?.message}
-            </Typography>
-          )}
-          <Paper
-            elevation={1}
-            sx={{ marginBottom: "40px", backgroundColor: "#494949" }}
-          >
-            <TextField
-              {...register("username", {
-                required: {
-                  value: true,
-                  message: "Username required",
-                },
-                maxLength: {
-                  value: 30,
-                  message: "30 characters max",
-                },
-                pattern: {
-                  value: /^[a-zA-Z0-9_]*$/,
-                  message: "Use only alphabets, numbers and underscores",
-                },
-              })}
-              name="username"
-              id="username"
-              label="Username"
-              autoComplete="off"
-              variant="filled"
-              color="secondary"
-              fullWidth
-              inputProps={{
-                style: { fontSize: 23, margin: "auto", color: "whitesmoke" },
-              }}
-              InputLabelProps={{ style: { fontSize: 20, color: "#ebe8e8aa" } }}
-            />
-          </Paper>
-          {errors.username && (
-            <Typography
-              variant="h6"
-              component="p"
-              fontFamily={"Varela Round"}
-              color="red"
-              marginTop={"-32px"}
-              marginBottom={"8px"}
-            >
-              {errors.username?.message}
-            </Typography>
-          )}
-          <Paper
-            elevation={1}
-            sx={{ marginBottom: "40px", backgroundColor: "#494949" }}
-          >
-            <TextField
-              {...register("email", {
-                pattern: {
-                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                  message: "Enter a valid email id",
-                },
-                required: {
-                  value: true,
-                  message: "Email id required",
-                },
-              })}
-              name="email"
-              id="email"
-              label="Email Id"
-              autoComplete="off"
-              variant="filled"
-              color="secondary"
-              fullWidth
-              inputProps={{
-                style: { fontSize: 23, margin: "auto", color: "whitesmoke" },
-              }}
-              InputLabelProps={{ style: { fontSize: 20, color: "#ebe8e8aa" } }}
-            />
-          </Paper>
-          {errors.email && (
-            <Typography
-              variant="h6"
-              component="p"
-              fontFamily={"Varela Round"}
-              color="red"
-              marginTop={"-32px"}
-              marginBottom={"8px"}
-            >
-              {errors.email?.message}
-            </Typography>
-          )}
-          <Paper
-            elevation={1}
-            sx={{ marginBottom: "40px", backgroundColor: "#494949" }}
-          >
-            <FormControl variant="filled" color="secondary" fullWidth>
-              <InputLabel
-                htmlFor="outlined-adornment-password"
-                sx={{ fontSize: 20, color: "#ebe8e8aa" }}
-              >
-                Password
-              </InputLabel>
-              <FilledInput
+              margin="normal"
+              />
+              {errors?.name && (
+                <Typography className={classes.error}>
+                  {errors?.name?.message}
+                </Typography>
+              )}
+              <TextField
+                {...register("username", {
+                  required: {
+                    value: true,
+                    message: "Username required",
+                  },
+                  maxLength: {
+                    value: 30,
+                    message: "30 characters max",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9_]*$/,
+                    message: "Use only alphabets, numbers and underscores",
+                  },
+                })}
+                name="username"
+                id="username"
+                label="Username"
+                autoComplete="off"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+              />
+              {errors.username && (
+                <Typography className={classes.error}>
+                  {errors.username?.message}
+                </Typography>
+              )}
+              <TextField
+                {...register("email", {
+                  pattern: {
+                    value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: "Enter a valid email id",
+                  },
+                  required: {
+                    value: true,
+                    message: "Email required",
+                  },
+                })}
+                name="email"
+                label="Email"
+                autoComplete="off"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+              />
+              {errors.email && (
+                <Typography className={classes.error}>
+                  {errors.email?.message}
+                </Typography>
+              )}
+              <TextField
                 {...register("password", {
                   required: {
                     value: true,
-                    message: "Password required",
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: "Should be less than 50 characters",
-                  },
-                  minLength: {
-                    value: 8,
-                    message: "Should be more than 8 characters",
+                    message: "Password is required",
                   },
                 })}
                 name="password"
                 autoComplete="off"
-                id="password"
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{ color: "secondary.main" }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
                 label="Password"
-                inputProps={{
-                  style: { fontSize: 23, margin: "auto", color: "#ebe8e8" },
-                }} // font size of input text
+                type="password"
+                variant="outlined"
+                fullWidth
+                margin="normal"
               />
-            </FormControl>
-          </Paper>
-          {errors.password && (
-            <Typography
-              variant="h6"
-              component="p"
-              fontFamily={"Varela Round"}
-              color="red"
-              marginTop={"-35px"}
-              marginBottom={"11px"}
-            >
-              {errors.password?.message}
-            </Typography>
-          )}
-          <Button
-            disabled={isCreatingUser}
-            type="submit"
-            variant="outlined"
-            color="secondary"
-            sx={{
-              fontSize: "18px",
-              height: "49px",
-              borderRadius: 0,
-              boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-              ":hover": {
-                backgroundColor: "green",
-                border: "green",
-                color: "white",
-              },
-            }}
-            className="drop-shadow-form-field"
-          >
-            Sign Up
-          </Button>
-        </form>
-        <Typography
-          sx={{ color: "#ebe8e8aa" }}
-          component="p"
-          fontSize="23px"
-          marginY={"40px"}
-        >
-          Already have an account?
-          <Link
-            className="underline-offset-4 text-white underline"
-            to={"/signin"}
-          >
-            Sign In
-          </Link>
-        </Typography>
+              {errors.password && (
+                <Typography className={classes.error}>
+                  {errors.password?.message}
+                </Typography>
+              )}
+              <Button
+                disabled={isCreatingUser}
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{ marginTop: "1.5rem", padding: "10px 0" }}
+                type="submit"
+              >
+                Sign Up
+              </Button>
+              <Typography
+                style={{ marginTop: "1.3rem" }}
+                className={classes.content}
+              >
+                Already have an account? <Link to={"/signin"}>Sign In</Link>
+              </Typography>
+            </form>
+          </Box>
+          <Box className={classes.imageContainer} />
+        </Box>
       </Box>
-    </>
   );
 }
 

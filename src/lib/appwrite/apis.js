@@ -3,6 +3,7 @@ import { config, avatars, account, databases, storage } from "./config";
 import { Query, Permission, Role } from "appwrite"
 export async function createAccount(user) {
     try {
+        console.log(user)
         const newAccount = await account.create(ID.unique(), user.email, user.password, user.name)
         if (!newAccount) {
             throw Error("Cannot add user to auth")
@@ -18,7 +19,7 @@ export async function createAccount(user) {
         return newUserInDB;
     } catch (error) {
         console.log(error)
-        return error
+        throw error
     }
 }
 export async function saveUserToDB(user) {
@@ -189,6 +190,7 @@ export async function deleteComment(commentId) {
 
 export async function addFollower(followingId, toFollowId) {
     try {
+        console.log(followingId, toFollowId)
         const follow = await databases.createDocument(
             config.databaseId,
             config.followersColletion,
@@ -201,7 +203,6 @@ export async function addFollower(followingId, toFollowId) {
         if (!follow) {
             throw Error("Cannot add follower")
         }
-        console.log("HOHOHOHOHOHOHOHOHOHOHOHO")
         return follow;
     } catch (error) {
         console.log(error)

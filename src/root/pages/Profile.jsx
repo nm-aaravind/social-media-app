@@ -1,42 +1,129 @@
-import React, { useContext } from "react";
+import React from "react";
 import ProfileCard from "../../components/ProfileCard";
+import { makeStyles } from "@mui/styles";
 import { Box, Typography, Divider } from "@mui/material";
-import PageHeader from "../../components/PageHeader";
 import Loader from "../../components/Loader";
 import { useParams } from "react-router-dom";
 import { useGetUser, useGetUserById } from "../../lib/react-query/queries";
 import GridPostList from "../../components/GridPostList";
-import UserContext from "../../context/userContext";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    width: "100%",
+    [theme.breakpoints.up("xl")]: {
+      width: "85%",
+    },
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(2.5), // gap-10 equivalent
+    [theme.breakpoints.up("sm")]: {
+      paddingLeft: theme.spacing(3), // sm:px-12 equivalent
+      paddingRight: theme.spacing(3),
+    },
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: theme.spacing(3.5), // md:px-14 equivalent
+      paddingRight: theme.spacing(3.5),
+    },
+  },
+  postContainer: {
+    backgroundColor: "white",
+    border: "1px solid #6a1b9a66",
+    borderRadius: "0.375rem",
+    paddingTop: theme.spacing(2.5), // pt-10 equivalent
+    paddingLeft: theme.spacing(0.5), // px-2 equivalent
+    paddingRight: theme.spacing(0.5),
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(1.25), // gap-5 equivalent
+  },
+  headerContainer: {
+    paddingLeft: theme.spacing(1), // px-4 equivalent
+    paddingTop: theme.spacing(0.5), // pt-2 equivalent
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(1.25), // gap-5 equivalent
+    width: "100%",
+    justifyContent: "space-between",
+    marginBottom: theme.spacing(1.5), // mb-6 equivalent
+  },
+  divider: {
+    backgroundColor: "white",
+    width: "95%",
+    alignSelf: "center",
+  },
+  postsContent: {
+    paddingLeft: theme.spacing(1), // px-4 equivalent
+    paddingRight: theme.spacing(1),
+  },
+  noPostsText: {
+    marginBottom: theme.spacing(7.5), // mb-3rem equivalent
+    textAlign: "center",
+  },
+}));
+
 const Profile = () => {
+  const classes = useStyles();
   const { id } = useParams();
   const { data: loggedInUser, isPending: isFetchingCurrentUser } = useGetUser();
-  const { data: user, isPending: isFetchingUser } = useGetUserById({ accountid: id });
+  const { data: user, isPending: isFetchingUser } = useGetUserById({
+    accountid: id,
+  });
+
   React.useEffect(() => {
     document.title = "Heyo | Profile";
   }, []);
+
+  if (isFetchingCurrentUser || isFetchingUser) {
+    return <Loader message="Fetching user" />;
+  }
+
+  let follow_object = null;
+  for (let followers of user?.followers) {
+    if (followers.following?.$id == loggedInUser?.$id) {
+      follow_object = followers;
+      break;
+    }
+  }
+  const following = follow_object ? true : false;
   return (
-    <Box className="w-full flex justify-center">
-      <PageHeader heading="Profile" />
-      {isFetchingUser || isFetchingCurrentUser ? (
-        <Loader message="Fetching user details"/>
-      ) : (
-        <div className="sm:w-full xl:w-[85%] sm:px-12 md:px-14 flex flex-col gap-10 pt-52">
-          <ProfileCard userToDisplay={user} currentUser={loggedInUser} />
-          <div className="bg-[#272727] pt-10 px-2 flex flex-col gap-5 ">
-            <div className="px-4 pt-2 flex flex-col gap-5 w-full justify-between mb-6 ">
-              <Typography paddingX={'3rem'} variant="h4" component="h3" color="secondary">
+    <Box bgcolor="primary.light" className="w-full flex justify-center px-4">
+      <Box className={classes.container}>
+        <ProfileCard
+          userToDisplay={user}
+          currentUser={loggedInUser}
+          following={following}
+          follow_object={follow_object}
+        />
+        {following && (
+          <Box className={classes.postContainer}>
+            <Box className={classes.headerContainer}>
+              <Typography
+                paddingX={"3rem"}
+                variant="h4"
+                component="h3"
+                color="secondary"
+              >
                 Posts
               </Typography>
-              <Divider className=" bg-white w-[95%] self-center" />
-            </div>
-            <div className="px-4">
-              {
-                user?.posts.length > 0 ? <GridPostList posts={user.posts} toDisplay="profile" /> : <Typography marginBottom={'3rem'} align="center" variant="h4" component='p' color='secondary'>No posts yet</Typography>
-              }
-            </div>
-          </div>
-        </div>
-      )}
+              <Divider className={classes.divider} />
+            </Box>
+            <Box className={classes.postsContent}>
+              {user?.posts.length > 0 ? (
+                <GridPostList posts={user.posts} toDisplay="profile" />
+              ) : (
+                <Typography
+                  className={classes.noPostsText}
+                  variant="h4"
+                  component="p"
+                  color="secondary"
+                >
+                  No posts yet
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

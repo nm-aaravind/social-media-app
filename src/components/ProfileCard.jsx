@@ -3,53 +3,53 @@ import { Box, Typography, Button, Divider, useRadioGroup } from "@mui/material";
 import React from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { useAddFollower, useRemoveFollower } from "../lib/react-query/queries";
-const ProfileCard = ({ userToDisplay, currentUser }) => {
-  const { mutateAsync: addFollower, isPending: isAddingFollower } = useAddFollower()
-  const [showToast] = useOutletContext()
-  const { mutateAsync: removeFollower, isPending: isRemovingFollower } = useRemoveFollower()
-  let follow_object = null;
-  console.log(userToDisplay, currentUser)
-  for (let followers of userToDisplay.followers) {
-    console.log(followers.following?.$id, currentUser?.$id);
-    if (followers.following?.$id == currentUser?.$id) {
-      follow_object = followers;
-      break;
-    }
-  }
-  async function addFollowerHandler(){
+const ProfileCard = ({
+  userToDisplay,
+  currentUser,
+  follow_object,
+  following,
+}) => {
+  const { mutateAsync: addFollower, isPending: isAddingFollower } =
+    useAddFollower();
+  const [showToast] = useOutletContext();
+  const { mutateAsync: removeFollower, isPending: isRemovingFollower } =
+    useRemoveFollower();
+
+  async function addFollowerHandler() {
     try {
-      const follow = await addFollower({ toFollowId: userToDisplay.$id  , followingId: currentUser.$id })
-      if(!follow){
-        throw Error('Cannot follow')
+      const follow = await addFollower({
+        toFollowId: userToDisplay.$id,
+        followingId: currentUser.$id,
+      });
+      if (!follow) {
+        throw Error("Cannot follow");
       }
-      showToast("success", "Followed")
+      showToast("success", "Followed");
     } catch (error) {
-      showToast("error", `Error: ${error.message}`)
-      throw error
+      showToast("error", `Error: ${error.message}`);
+      throw error;
     }
   }
-  async function removeFollowerHandler(){
+  async function removeFollowerHandler() {
     try {
-      const {status} = await removeFollower(follow_object.$id);
-      if(status != 'ok') throw Error("Cannot unfollow")
-      showToast("success", "Unfollowed")
-  } catch (error) {
-      showToast("error", `Error: ${error.message}`)
-      throw error
+      const { status } = await removeFollower(follow_object?.$id);
+      if (status != "ok") throw Error("Cannot unfollow");
+      showToast("success", "Unfollowed");
+    } catch (error) {
+      showToast("error", `Error: ${error.message}`);
+      throw error;
     }
   }
-  const following = follow_object ? true : false
   return (
     <Box
-      boxShadow="0px 5px 5px rgba(0,0,0,0.5)"
-      className="drop-shadow-3xl lg:w-[75%]"
-      bgcolor="primary.light"
+      className="rounded-md border border-[#6a1b9a66]"
+      bgcolor="white"
       width="100%"
     >
-      <div className="flex flex-col flex-wrap p-20 gap-10 w-full">
-        <div className="flex gap-16 flex-wrap sm:justify-center sm:gap-10 md:justify-normal lg:gap-12">
+      <div className="flex flex-col flex-wrap p-10 sm:gap-5 md:gap-10 w-full">
+        <div className="flex gap-16 flex-wrap sm:justify-center sm:gap-3 md:justify-normal lg:gap-12">
           <img
-            className="lg:w-40 xs:w-20 md:w-36"
+            className="lg:w-40 sm:w-48 md:w-36 rounded-full"
             src={userToDisplay?.profileimageurl}
           ></img>
           <div className="">
@@ -63,30 +63,33 @@ const ProfileCard = ({ userToDisplay, currentUser }) => {
             </Typography>
             <Typography
               className="sm:text-center md:text-left"
-              color="secondary.light"
               variant="h4"
               component="p"
+              color="secondary"
             >
               @{userToDisplay.username}
             </Typography>
             <div className="flex gap-10 mt-4">
               <Link to={"followers"} className="p-1">
                 <Typography
-                  variant="p"
+                  className="sm:text-center md:text-left"
+                  variant="h5"
                   component="p"
-                  className="text-white font-varela sm:text-2xl md:text-3xl"
+                  color="secondary"
                 >
                   {userToDisplay.followers.length} followers
                 </Typography>
               </Link>
               <Link to={"followers"} className="p-1">
-                <Typography
-                  variant="p"
+              <Typography
+                  className="sm:text-center md:text-left"
+                  variant="h5"
                   component="p"
-                  className="text-white font-varela sm:text-2xl md:text-3xl"
+                  color="secondary"
                 >
                   {userToDisplay.following.length} following
                 </Typography>
+
               </Link>
             </div>
           </div>
@@ -94,7 +97,6 @@ const ProfileCard = ({ userToDisplay, currentUser }) => {
         {userToDisplay.bio && (
           <div className="">
             <Divider className=" bg-white" />
-            {/* <Typography variant='h3' component='p' color='secondary'>Bio</Typography> */}
             <Typography
               marginTop={"1rem"}
               variant="h5"
@@ -105,80 +107,41 @@ const ProfileCard = ({ userToDisplay, currentUser }) => {
             </Typography>
           </div>
         )}
-        {userToDisplay.$id === currentUser.$id ? (
+        {userToDisplay.$id === currentUser?.$id ? (
           <Link
             className="w-full"
             to={`/update-profile/${userToDisplay.accountid}`}
           >
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{
-                fontSize: "18px",
-                height: "49px",
-                borderRadius: 0,
-                width: "100%",
-                boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-                ":hover": {
-                  backgroundColor: "info.main",
-                  border: "lightsalmon",
-                  color: "white",
-                },
-              }}
-              className="drop-shadow-form-field glex gap-3"
-            >
-              <Edit className="mb-1" />
-              <Typography variant="h6">EDIT PROFILE</Typography>
+            <Button variant="contained" color="primary" fullWidth type="submit">
+              <Edit className="m-1" />
+              <Typography variant="p">Edit Profile</Typography>
             </Button>
           </Link>
         ) : following ? (
           <Button
             onClick={removeFollowerHandler}
-            variant="outlined"
-            color="secondary"
-            sx={{
-              fontSize: "18px",
-              height: "50px",
-              borderRadius: 0,
-              width: "100%",
-              boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-              ":hover": {
-                backgroundColor: "red",
-                border: "red",
-                color: "white",
-              },
-            }}
-            className="drop-shadow-form-field flex gap-3"
+            variant="contained"
+            color="error"
+            fullWidth
+            type="submit"
+            disabled={isRemovingFollower}
           >
-            <PersonRemove className="mb-1" />
-            <Typography className="self-center" variant="h6">
-              Unfollow
-            </Typography>
+            <PersonRemove className="mb-1 mr-2" />
+            <Typography variant="p">Unfollow</Typography>
           </Button>
-        ):<Button
-        variant="outlined"
-        color="secondary"
-        sx={{
-          fontSize: "18px",
-          height: "50px",
-          borderRadius: 0,
-          width: "100%",
-          boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-          ":hover": {
-            backgroundColor: "info.main",
-            border: "lightsalmon",
-            color: "white",
-          },
-        }}
-        className="drop-shadow-form-field flex gap-3"
-        onClick={addFollowerHandler}
-        disabled={isAddingFollower}
-      >
-        <PersonAdd className="mb-1" />
-        <Typography className="self-center" variant="h6">
-            Follow
-        </Typography>
-      </Button>}
+        ) : (
+          <Button
+            onClick={addFollowerHandler}
+            variant="contained"
+            color="success"
+            fullWidth
+            type="submit"
+            disabled={isAddingFollower}
+          >
+            <PersonAdd className="mb-1 mr-2" />
+            <Typography variant="p">Follow</Typography>
+          </Button>
+        )}
       </div>
     </Box>
   );

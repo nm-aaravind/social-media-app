@@ -16,7 +16,6 @@ export const UserProvider = ({ children }) => {
         imageUrl: '',
     })
     const [isAuthenticated, setIsAuthenticated] = React.useState(false)
-    console.log(isAuthenticated, userDetails, "Inside contexxt")
     const [isLoading, setIsLoading] = React.useState(false)
     const updateContext = (updatedProfile) => {
         userDetails.imageUrl = updatedProfile.profileimageurl
@@ -26,7 +25,6 @@ export const UserProvider = ({ children }) => {
     }
     const checkAuth = async () => {
         try {
-            console.log("Entered checkAuth")
             const currentUser = await getUser();
             if (currentUser) {
                 setUserDetails({

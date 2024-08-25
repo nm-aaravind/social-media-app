@@ -1,6 +1,5 @@
 import { Box, Typography, Divider } from "@mui/material";
 import React from "react";
-import PageHeader from "../../components/PageHeader";
 import SearchBar from "../../components/SearchBar";
 import { FilterList } from "@mui/icons-material";
 import GridPostList from "../../components/GridPostList";
@@ -36,7 +35,6 @@ function Explore() {
 
   return (
     <Box bgcolor="primary.main" className="w-full flex flex-col items-center">
-      <PageHeader heading="Explore" />
       <div className="bg-[#272727] sm:w-full xl:w-[85%] sm:px-10 md:px-14 flex flex-col">
         <div className="sm:pt-52 md:pt-60">
           <SearchBar search={search} setSearch={setSearch} />

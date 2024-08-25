@@ -4,7 +4,6 @@ import { useCreatePost } from "../../lib/react-query/queries";
 import Loader from "../../components/Loader";
 import { Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import PageHeader from "../../components/PageHeader";
 function CreatePost() {
   React.useEffect(() => {
     document.title = "Heyo | Post";
@@ -14,7 +13,6 @@ function CreatePost() {
     <Loader message="Creating your post" />
   ) : (
     <Box className="flex flex-col w-full items-center">
-      <PageHeader heading="Post something" />
       <Box className="sm:w-full sm:p-4 md:p-8 lg:w-[min(80%,1200px)] md:mt-48 sm:mt-40">
         <PostForm mode="create" method={createPost} />
       </Box>

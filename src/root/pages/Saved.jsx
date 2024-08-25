@@ -2,7 +2,6 @@ import React from "react";
 import { useGetUser } from "../../lib/react-query/queries";
 import { Box } from "@mui/material";
 import GridPostList from "../../components/GridPostList";
-import PageHeader from "../../components/PageHeader";
 import Loader from "../../components/Loader";
 function Saved() {
   const { data: user, isPending } = useGetUser();
@@ -11,7 +10,6 @@ function Saved() {
   }, []);
   return (
     <Box bgcolor="primary.main" className="w-full flex justify-center">
-      <PageHeader heading="Saved" />
       {isPending ? (
         <Loader message="Fetching saved posts" />
       ) : (

@@ -10,18 +10,22 @@ import { QueryProvider } from "./lib/react-query/QueryProvider";
 
 const theme = createTheme({
     typography: {
-        fontFamily: "'Varela Round', sans-serif",
+        fontFamily: "'Exo 2', serif",
     },
     palette: {
         primary:{
-            main : '#161616',
-            light : '#272727',
+            main : '#6a1b9a',
+            mainLight: '#6a1b9a77',
+            light : '#f5f5f5',
         },
         secondary:{
-            main: '#ebe8e8',
+            main: '#333',    
             light: "#ebe8e8aa"
-
+        },
+        background: {
+            main: '#f5f5f5'
         }
+
     }
 
 })
