@@ -4,7 +4,7 @@ import Loader from "../../components/Loader";
 import Postcard from "../../components/Postcard";
 import { NavLink } from "react-router-dom";
 import { useGetUser } from "../../lib/react-query/queries";
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import { Box } from "@mui/material";
 import { createComment } from "../../lib/appwrite/apis";
 function Home() {
   const { data: posts, isPending: isFetchingPosts } = useGetRecentPosts();
