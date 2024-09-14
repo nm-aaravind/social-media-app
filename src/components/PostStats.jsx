@@ -54,7 +54,7 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
   }
   return (
     <Box
-      className={`flex flex-col text-ellipsis px-5 pt-3 ${
+      className={`flex flex-col overflow-hidden text-ellipsis px-5 pt-3 ${
         forGrid ? "sm:h-[5.5rem] md:h-[6.55rem]" : "md:h-auto"
       } md:border-t md:border-white/90`}
     >
@@ -85,7 +85,7 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
           )}
         </button>
       </div>
-      <p className="text-white text-ellipsis text-lg font-varela overflow-hidden line-clamp-2 mt-1 whitespace-nowrap sm:text-md md:text-2xl mb-5">
+      <p className="text-white font-varela mt-1 sm:text-md md:text-xl">
         <span className={`${forGrid && "pb-2"} text-white/75 mr-3`}>
           {post?.user?.username}
         </span>
@@ -93,7 +93,7 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
       </p>
       {!forGrid && (
         <span
-          className="text-white/70 bg-transparent sm:text-md lg:text-lg sm:-mt-4 sm:mb-3 
+          className="text-white/70 bg-transparent lg:text-md sm:-mt-4 sm:mb-3 
                 md:mt-1 font-varela"
         >
           {multiFormatDateString(post.$createdAt)}

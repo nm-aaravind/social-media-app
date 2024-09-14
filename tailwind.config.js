@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        'primary': "var(--primary-color)",
+        'primary-light': "var(--primary-light)",
+        'light': "var(--light)"
+      },
       screens: {
         'sm': '300px'
       },

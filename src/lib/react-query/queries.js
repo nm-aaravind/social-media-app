@@ -27,10 +27,11 @@ export const useCreatePost = () => {
         }
     })
 }
-export const useGetRecentPosts = () => {
+export const useGetRecentPosts = (userId) => {
     return useQuery({
-        queryKey: ['getRecentPosts'],
-        queryFn: getRecentPosts
+        queryKey: ['getRecentPosts', userId],
+        queryFn: () => getRecentPosts(userId),
+        enabled: !!userId
     })
 }
 

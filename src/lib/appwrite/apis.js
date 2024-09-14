@@ -111,9 +111,11 @@ export async function getUser() {
         return currentUser.documents[0]
     } catch (error) {
         console.log(error)
+        throw error
     }
 }
 export async function createPost(data) {
+    console.log(data, "Data sent")
     try {
         const uploadedFile = await uploadFileToStorage(data.file[0])
         if (!uploadedFile) {
@@ -130,7 +132,7 @@ export async function createPost(data) {
             config.postsCollection,
             ID.unique(),
             {
-                user: data.user.accountid,
+                user: data.user.$id,
                 caption: data.caption,
                 tags: tags,
                 image: filePreview,
@@ -161,9 +163,16 @@ async function deleteFile(fileId) {
         throw error
     }
 }
-export async function getRecentPosts() {
+export async function getRecentPosts(userId) {
     try {
-        const recentPosts = await databases.listDocuments(config.databaseId, config.postsCollection, [Query.orderDesc('$createdAt', Query.limit(40))]);
+        let followers = await databases.listDocuments(config.databaseId, config.followersColletion, [
+            Query.equal('following',userId)
+        ])
+        followers = followers.documents.map((follower) => follower.toFollow.$id)
+        const recentPosts = await databases.listDocuments(config.databaseId, config.postsCollection, [
+            Query.equal('user', [...followers, userId]),
+        ]);
+        console.log(recentPosts, "Recent posts")
         if (!recentPosts) {
             throw Error
         }
@@ -436,7 +445,6 @@ export async function getInfinitePosts({ pageParam }) {
 
 export async function searchPosts(searchWord) {
     try {
-        console.log(searchWord, "THE WORD")
         const posts = await databases.listDocuments(
             config.databaseId,
             config.postsCollection,

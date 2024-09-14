@@ -135,7 +135,7 @@ import { Box, Typography, Divider } from "@mui/material";
 import Loader from "../../components/Loader";
 import { useParams } from "react-router-dom";
 import { useGetUser, useGetUserById } from "../../lib/react-query/queries";
-
+import GridPostList from "../../components/GridPostList";
 const Profile = () => {
   const { id } = useParams();
   const { data: loggedInUser, isPending: isFetchingCurrentUser } = useGetUser();

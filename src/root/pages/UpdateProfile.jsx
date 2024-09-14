@@ -9,11 +9,11 @@ function UpdateProfile() {
     document.title = "Heyo | Update Profile";
   }, []);
   return (
-    <Box className="flex flex-col w-full items-center">
+    <Box className="flex w-full items-center">
       {isPending ? (
         <Loader message="Loading profile" />
       ) : (
-        <Box className="sm:w-full lg:w-[min(80%,1200px)]">
+        <Box className="sm:w-full">
           <ProfileForm user={user} />
         </Box>
       )}

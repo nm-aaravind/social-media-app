@@ -1,13 +1,20 @@
 import React, { useContext } from "react";
-import { TextField, Typography, Paper, Button } from "@mui/material";
+import {
+  TextField,
+  Typography,
+  Box,
+  Grid,
+  Button,
+  Divider,
+} from "@mui/material";
 import FileUploader from "./FileUploader";
 import { FormProvider, useForm } from "react-hook-form";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UserContext from "../context/userContext";
 
 function PostForm({ post, mode, method }) {
-  const { userDetails } = useContext(UserContext);
-  const [showToast] = useOutletContext()
+  const { userDetails, showToast } = useContext(UserContext);
+  console.log(userDetails, "Context")
   const navigate = useNavigate();
   const methods = useForm({
     defaultValues: {
@@ -17,21 +24,16 @@ function PostForm({ post, mode, method }) {
       file: [],
     },
   });
-
-  const { errors } = methods.formState;
-
   async function formSubmit(data) {
     try {
-      if (mode == "create") {
-        console.log("Create");
+      if (mode == "Create") {
         const createdPost = await method({ ...data, user: userDetails });
         if (!createdPost) {
           throw Error("Cannot create post");
         }
-        showToast('success', "Created post successfully")
+        showToast("success", "Created post successfully");
         navigate("/");
-      } else if (mode == "update") {
-        console.log(data)
+      } else if (mode == "Update") {
         const updatePost = await method({
           ...data,
           postId: post.$id,
@@ -40,208 +42,87 @@ function PostForm({ post, mode, method }) {
         if (!updatePost) {
           throw Error("Cannot update post");
         }
-        showToast('success', "Updated post successfully")
-        return navigate(`/update-post/${post.$id}`);
+        showToast("success", "Updated post successfully");
+        return navigate(`/posts/${post.$id}`);
       }
     } catch (error) {
-      showToast('error', `Error: ${error.message}`)
-      throw error
+      showToast("error", `Error: ${error.message}`);
+      throw error;
     }
   }
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(formSubmit)}
-        className="flex flex-col gap-5 mb-16"
-      >
-        <FileUploader
-          name="file"
-          mode={mode}
-          image={mode == "create" ? false : post.image}
-        />
-        {errors.file && (
-          <Typography
-            component="p"
-            variant="h5"
-            fontFamily={"Varela Round"}
-            color="red"
-            align="center"
-          >
-            {errors.file?.message}
+      <form className="h-96" onSubmit={methods.handleSubmit(formSubmit)}>
+        <Box>
+          <Typography className="py-5" variant="h4" gutterBottom>
+            {mode} Post
+            <Divider />
           </Typography>
-        )}
-        <div className="flex flex-col gap-3 m-4">
-          <Paper
-            className="drop-shadow-form"
-            square
-            sx={{
-              backgroundColor: "primary.light",
-              ":focus-within": {
-                border: "1px solid #ebe8e888",
-              },
-              border: "1px solid #fff2",
-            }}
-          >
-            <Typography
-              fontFamily="Varela Round"
-              borderBottom={"1px solid #fff2"}
-              padding={"0.75rem"}
-              align="center"
-              variant="p"
-              component={"p"}
-              color="secondary.main"
-              className="sm:text-2xl md:text-3xl"
+          <Grid container className="h-full" spacing={2}>
+            <Grid item xs={12} md={6}>
+              <FileUploader
+                name="file"
+                mode={mode}
+                image={mode == "create" ? false : post?.image}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              className="flex justify-between gap-8 flex-wrap"
             >
-              Caption
-            </Typography>
-            <TextField
-              sx={{ border: 0, outline: 0 }}
-              {...methods.register("caption", {
-                max: {
-                  value: 2200,
-                  message: "Max 2200 characters allowed",
-                },
-              })}
-              name="caption"
-              id="caption"
-              rows={3}
-              variant="outlined"
-              fullWidth
-              InputProps={{
-                sx: { fontSize: 22, borderRadius: 0, color: "white" },
-              }}
-              multiline
-            />
-          </Paper>
-        </div>
-        <div className="flex flex-col gap-3 m-4">
-          <Paper
-            className="drop-shadow-form"
-            square
-            sx={{
-              backgroundColor: "primary.light",
-              ":focus-within": {
-                border: "1px solid #ebe8e888",
-              },
-              border: "1px solid #fff2",
-            }}
-          >
-            <Typography
-              fontFamily="Varela Round"
-              borderBottom={"1px solid #fff2"}
-              padding={"0.75rem"}
-              align="center"
-              variant="p"
-              component={"p"}
-              color="secondary.main"
-              className="sm:text-2xl md:text-3xl"
-            >
-              Location
-            </Typography>
-            <TextField
-              {...methods.register("location", {
-                max: {
-                  value: 2200,
-                  message: "Max 2200 characters allowed",
-                },
-              })}
-              name="location"
-              id="location"
-              variant="outlined"
-              fullWidth
-              InputProps={{
-                sx: { fontSize: 22, borderRadius: 0, color: "white" },
-              }}
-              rows={1}
-            />
-          </Paper>
-        </div>
-        <div className="flex flex-col gap-3 m-4">
-          <Paper
-            className="drop-shadow-form"
-            square
-            sx={{
-              backgroundColor: "primary.light",
-              ":focus-within": {
-                border: "1px solid #ebe8e888",
-              },
-              border: "1px solid #fff2",
-            }}
-          >
-            <Typography
-              fontFamily="Varela Round"
-              borderBottom={"1px solid #fff2"}
-              padding={"0.75rem"}
-              align="center"
-              variant="p"
-              className="sm:text-2xl md:text-3xl"
-              component={"p"}
-              color="secondary.main"
-            >
-              Tags
-            </Typography>
-            <TextField
-              rows={2}
-              {...methods.register("tags", {
-                max: {
-                  value: 2200,
-                  message: "Max 2200 characters allowed",
-                },
-              })}
-              name="tags"
-              id="tags"
-              variant="outlined"
-              fullWidth
-              InputProps={{
-                sx: { fontSize: 22, borderRadius: 0, color: "white" },
-              }}
-              multiline
-            />
-          </Paper>
-        </div>
-        <div className="w-full flex gap-10 self-end p-4 mt-2 mb-14">
-          <Button
-            variant="outlined"
-            sx={{
-              width: "100%",
-              border: "1px solid #ebe8e888",
-              fontSize: "22px",
-              borderRadius: 0,
-              boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-              color: "#ebe8e888",
-              ":hover": {
-                backgroundColor: "red",
-                border: "red",
-                color: "#ebe8e8",
-              },
-            }}
-            className="drop-shadow-form-field md:h-16 sm:h-12"
-            onClick={() => navigate(-1)}
-          >
-            Discard
-          </Button>
-
-          <Button
-            type="submit"
-            sx={{
-              width: "100%",
-              border: "1px solid #ebe8e888",
-              fontSize: "22px",
-              borderRadius: 0,
-              boxShadow: "0px 5px 5px rgba(0,0,0,0.5)",
-              color: "#ebe8e888",
-              ":hover": {
-                backgroundColor: "green",
-                border: "green",
-                color: "#ebe8e8",
-              },
-            }}
-            className="sm:h-12 md:h-16 drop-shadow-form-field"
-            color="secondary"
-          >
-            {mode == "create" ? "Post" : "Update"}
-          </Button>
-        </div>
+              <TextField
+                label="Caption"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                {...methods.register("caption", {
+                  max: {
+                    value: 2200,
+                    message: "Max 2200 characters allowed",
+                  },
+                })}
+              />
+              <TextField
+                label="Location"
+                variant="outlined"
+                fullWidth
+                {...methods.register("location", {
+                  max: {
+                    value: 2200,
+                    message: "Max 2200 characters allowed",
+                  },
+                })}
+                name="location"
+                id="location"
+              />
+              <TextField
+                label="Tags (comma-separated)"
+                variant="outlined"
+                fullWidth
+                {...methods.register("tags", {
+                  max: {
+                    value: 2200,
+                    message: "Max 2200 characters allowed",
+                  },
+                })}
+                name="tags"
+                id="tags"
+              />
+              <Button
+                type="submit"
+                sx={{ height: "3rem" }}
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
+                {mode}
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       </form>
     </FormProvider>
   );

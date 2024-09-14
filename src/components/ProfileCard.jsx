@@ -1,8 +1,9 @@
 import { Edit, PersonAdd, PersonRemove } from "@mui/icons-material";
-import { Box, Typography, Button, Divider, useRadioGroup } from "@mui/material";
-import React from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Box, Typography, Button, Divider } from "@mui/material";
+import React , {useContext} from "react";
+import { Link } from "react-router-dom";
 import { useAddFollower, useRemoveFollower } from "../lib/react-query/queries";
+import UserContext from "../context/userContext";
 const ProfileCard = ({
   userToDisplay,
   currentUser,
@@ -11,10 +12,9 @@ const ProfileCard = ({
 }) => {
   const { mutateAsync: addFollower, isPending: isAddingFollower } =
     useAddFollower();
-  const [showToast] = useOutletContext();
   const { mutateAsync: removeFollower, isPending: isRemovingFollower } =
     useRemoveFollower();
-
+  const {showToast} = useContext(UserContext);
   async function addFollowerHandler() {
     try {
       const follow = await addFollower({
@@ -42,28 +42,28 @@ const ProfileCard = ({
   }
   return (
     <Box
-      className="rounded-md border border-[#6a1b9a66]"
+      className={`rounded-md border ${JSON.stringify(currentUser) != JSON.stringify(userToDisplay) ? "mt-32" : "-mt-16"} border-[#6a1b9a66]`}
       bgcolor="white"
       width="100%"
     >
-      <div className="flex flex-col flex-wrap p-10 sm:gap-5 md:gap-10 w-full">
-        <div className="flex gap-16 flex-wrap sm:justify-center sm:gap-3 md:justify-normal lg:gap-12">
+      <div className="flex flex-col flex-wrap sm:p-5 md:p-10 sm:gap-2 md:gap-10 w-full">
+        <div className="flex gap-16 sm:flex-wrap sm:justify-center sm:gap-2 md:justify-normal md:gap-12">
           <img
-            className="lg:w-40 sm:w-48 md:w-36 rounded-full"
+            className="lg:w-40 md:w-36 sm:w-24 rounded-full"
             src={userToDisplay?.profileimageurl}
           ></img>
           <div className="">
             <Typography
               color="secondary"
-              variant="h3"
+              variant="p"
               component="p"
-              className="sm:text-center md:text-left"
+              className="sm:text-center md:text-left font-varela sm:text-4xl md:text-5xl"
             >
               {userToDisplay.name}
             </Typography>
             <Typography
-              className="sm:text-center md:text-left"
-              variant="h4"
+              className="sm:text-center md:text-left font-varela sm:text-3xl md:text-4xl"
+              variant="p"
               component="p"
               color="secondary"
             >
@@ -72,8 +72,8 @@ const ProfileCard = ({
             <div className="flex gap-10 mt-4">
               <Link to={"followers"} className="p-1">
                 <Typography
-                  className="sm:text-center md:text-left"
-                  variant="h5"
+                  className="sm:text-center md:text-left font-varela sm:text-xl md:text-2xl"
+                  variant="p"
                   component="p"
                   color="secondary"
                 >
@@ -82,8 +82,8 @@ const ProfileCard = ({
               </Link>
               <Link to={"followers"} className="p-1">
               <Typography
-                  className="sm:text-center md:text-left"
-                  variant="h5"
+                  className="sm:text-center md:text-left font-varela sm:text-xl md:text-2xl"
+                  variant="p"
                   component="p"
                   color="secondary"
                 >
@@ -99,8 +99,9 @@ const ProfileCard = ({
             <Divider className=" bg-white" />
             <Typography
               marginTop={"1rem"}
-              variant="h5"
+              variant="p"
               component="p"
+              className="font-varela sm:text-xl md:text-2xl"
               color="secondary"
             >
               {userToDisplay.bio}

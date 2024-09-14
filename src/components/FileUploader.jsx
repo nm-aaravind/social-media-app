@@ -1,69 +1,72 @@
-import React, { useCallback, useState, memo, useEffect } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { Paper, Typography, Box, Button } from '@mui/material';
-import { Divider } from '@mui/material';
-import { useFormContext } from 'react-hook-form';
-import { FilePresentOutlined } from '@mui/icons-material';
+import React, { useCallback, useState, memo, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import { Paper, Typography, Box, Button } from "@mui/material";
+import { Divider } from "@mui/material";
+import { useFormContext } from "react-hook-form";
+import { FilePresentOutlined } from "@mui/icons-material";
 
 function ProfileImageUploader({ name, mode, image }) {
-    console.log(image)
-    const {
-        register,
-        unregister,
-        setValue,
-        watch,
-    } = useFormContext()
-    const file = watch(name)
-    const onDrop = useCallback(acceptedFiles => {
-        console.log(acceptedFiles)
-        if (acceptedFiles?.length) {
-            setValue(name, acceptedFiles)
-        }
-    }, [setValue, name])
+  const { register, unregister, setValue, watch } = useFormContext();
+  const file = watch(name);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      if (acceptedFiles?.length) {
+        setValue(name, acceptedFiles);
+      }
+    },
+    [setValue, name]
+  );
 
-    const { getRootProps, getInputProps } = useDropzone({
-        onDrop, accept: {
-            'image/png': ['.png', '.jpg', '.jpeg'],
-        }
-    })
-    console.log("file", file)
-    useEffect(() => {
-        register(name, {
-            required: {
-                value: mode == 'create' ? true : false,
-                message: "Image required to post"
-            }
-        })
-        return () => {
-            unregister(name)
-            URL.revokeObjectURL(file)
-        }
-    }, [register, unregister, name])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/png": [".png", ".jpg", ".jpeg"],
+    },
+  });
+  useEffect(() => {
+    register(name, {
+      required: {
+        value: mode == "create" ? true : false,
+        message: "Image required to post",
+      },
+    });
+    return () => {
+      unregister(name);
+      URL.revokeObjectURL(file);
+    };
+  }, [register, unregister, name]);
 
-    const imageToDisplay = image ? image : file?.length > 0 && URL.createObjectURL(file[0])
+  const imageToDisplay = image
+    ? image
+    : file?.length > 0 && URL.createObjectURL(file[0]);
 
-    return (
-        <Box className="p-1">
-            {
-                imageToDisplay && <div className='w-full'>
-                    <img className='m-auto object-cover w-96 h-96' src={imageToDisplay} />
-                </div>
-            }
-            <div className='pt-9 pb-3 text-white/75 w-full flex font-varela px-3 cursor-pointer text-2xl gap-10'>
-                <div {...getRootProps({
-                    className: 'w-full'
-                })}>
-                    <input {...getInputProps()} id='file' />
-
-                    <Button sx={{ width: '100%', border: '1px solid #ebe8e888', fontSize: '22px', borderRadius: 0, boxShadow: '0px 5px 5px rgba(0,0,0,0.5)', color: '#ebe8e888', ":hover": { backgroundColor: 'green', border: 'green', color: '#ebe8e8' } }} className='md:h-16 sm:h-12 drop-shadow-form-field' color='secondary'>
-                        {imageToDisplay
-                        ? 'Choose a different picture' : 'Upload picture'}</Button>
-                </div>
-            </div>
-        </Box>
-    )
+  return (
+    <Box className="p-1 border border-dashed border-primary h-96">
+      {imageToDisplay ? (
+        <div className="w-full overflow-hidden h-full">
+          <img className="m-auto object-cover w-full h-fit" src={imageToDisplay} />
+          <Typography
+        color="primary"
+        className="font-varela pt-3 text-center cursor-pointer"
+          onClick={() => {
+            setValue(name, undefined);
+          }}
+        >
+          Remove picture
+        </Typography>
+        </div>
+      ) : <div className="text-gray-600 w-full flex h-full font-varela px-3 cursor-pointer text-xl">
+      <div {...getRootProps({
+          className: "grid place-items-center w-full"
+      })}>
+        <input {...getInputProps()} />
+          <p>Upload your memories here!</p>
+      </div>
+    </div>}
+      
+    </Box>
+  );
 }
-
 
 // function FileUploader({ name, mode, image, forProfile = false }) {
 //     const {
@@ -114,12 +117,12 @@ function ProfileImageUploader({ name, mode, image }) {
 //                     {
 //                         mode == 'update' && file?.length == 0 ? <div className='m-auto sm:h-56 md:h-96'>
 //                             <img src={image} className='sm:h-56 md:h-96 aspect-square'></img>
-//                         </div> 
-//                         : 
+//                         </div>
+//                         :
 //                         file?.length ? <div className='m-auto sm:h-56 md:h-96'>
 //                         <img src={URL.createObjectURL(file[0])} className= 'sm:h-56 md:h-96 aspect-square'></img>
-//                         </div> 
-//                         : 
+//                         </div>
+//                         :
 //                         <div className=''>
 //                             <FaPhotoVideo className='m-auto w-24 h-24 mb-4' />
 //                             {
@@ -133,9 +136,9 @@ function ProfileImageUploader({ name, mode, image }) {
 //                         file?.length > 0 && <p className='w-full text-center p-4'>{!forProfile ? 'Click here to choose another picture' : 'Click here to change profile photo'}</p>
 //                     }
 //                 </div>
-//             </Paper>    
+//             </Paper>
 //         </div>
 //     )
 // }
 
-export default ProfileImageUploader
+export default ProfileImageUploader;
