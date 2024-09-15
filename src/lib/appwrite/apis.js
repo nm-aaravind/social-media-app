@@ -3,7 +3,6 @@ import { config, avatars, account, databases, storage } from "./config";
 import { Query, Permission, Role } from "appwrite"
 export async function createAccount(user) {
     try {
-        console.log(user)
         const newAccount = await account.create(ID.unique(), user.email, user.password, user.name)
         if (!newAccount) {
             throw Error("Cannot add user to auth")
@@ -48,7 +47,7 @@ export async function saveUserToDB(user) {
 
 export async function signIn(user) {
     try {
-        const session = await account.createEmailSession(user.email, user.password)
+        const session = await account.createEmailPasswordSession(user.email, user.password)
         return session;
     } catch (error) {
         console.log(error)
@@ -166,7 +165,7 @@ async function deleteFile(fileId) {
 export async function getRecentPosts(userId) {
     try {
         let followers = await databases.listDocuments(config.databaseId, config.followersColletion, [
-            Query.equal('following',userId)
+            Query.equal('following', userId)
         ])
         followers = followers.documents.map((follower) => follower.toFollow.$id)
         const recentPosts = await databases.listDocuments(config.databaseId, config.postsCollection, [
@@ -199,7 +198,6 @@ export async function deleteComment(commentId) {
 
 export async function addFollower(followingId, toFollowId) {
     try {
-        console.log(followingId, toFollowId)
         const follow = await databases.createDocument(
             config.databaseId,
             config.followersColletion,
@@ -246,7 +244,6 @@ export async function createComment(postId, userId, content) {
                 user: userId
             }
         )
-        console.log(comment, "Made comment")
     } catch (error) {
         console.log(error)
     }
@@ -268,7 +265,6 @@ export async function uploadFileToStorage(file) {
             ID.unique(),
             file
         )
-        console.log("Hey")
         return uploadedFiles;
     } catch (error) {
         console.log(error)
@@ -278,7 +274,6 @@ export async function uploadFileToStorage(file) {
 
 export async function likePost(likeArray, postId) {
     try {
-        console.log("receing this", likeArray, postId)
         const likedPost = await databases.updateDocument(config.databaseId,
             config.postsCollection,
             postId,
@@ -351,11 +346,11 @@ export async function updatePost(data) {
         let filePreview = null
         let uploadedFile = null
         if (fileToUpdate) {
-             uploadedFile = await uploadFileToStorage(data.file[0])
+            uploadedFile = await uploadFileToStorage(data.file[0])
             if (!uploadedFile) {
                 throw Error("Error uploading to storage")
             }
-             filePreview = getFilePreview(uploadedFile.$id)
+            filePreview = getFilePreview(uploadedFile.$id)
             if (!filePreview) {
                 deleteFile(uploadedFile.$id)
                 throw Error("Error in image retrieval")
@@ -364,7 +359,7 @@ export async function updatePost(data) {
         const tags = data.tags.split(',').map((tag) => tag.trimStart().replace(/^#|\s/g, ""))
         let updatedPost = null
         if (fileToUpdate) {
-             updatedPost = await databases.updateDocument(
+            updatedPost = await databases.updateDocument(
                 config.databaseId,
                 config.postsCollection,
                 data.postId,
@@ -389,15 +384,14 @@ export async function updatePost(data) {
                 }
             )
         }
-        console.log(!updatedPost, "MAMAMAM")
-        if(updatedPost){
-            if(fileToUpdate){
+        if (updatedPost) {
+            if (fileToUpdate) {
                 await deleteFile(data.imageId)
             }
             return updatedPost
         }
-        if (!updatedPost){
-            if(fileToUpdate){
+        if (!updatedPost) {
+            if (fileToUpdate) {
                 await deleteFile(uploadedFile.$id)
             }
             throw Error("Cannot update post")
@@ -425,11 +419,10 @@ export async function deletePost(postId, imageId) {
 }
 
 export async function getInfinitePosts({ pageParam }) {
-    const queries = [Query.orderDesc('$updatedAt'), Query.limit(5)];
+    const queries = [Query.orderDesc('$updatedAt'), Query.limit(20)];
     if (pageParam) {
         queries.push(Query.cursorAfter(pageParam.toString()))
     }
-
     try {
         const posts = await databases.listDocuments(
             config.databaseId,
@@ -473,10 +466,10 @@ export async function updateProfile(userId, name, username, bio, file, image, cu
                 throw Error
             }
         } else {
-            if(currImage){
+            if (currImage) {
                 imageURL = image
             }
-            else{
+            else {
                 imageURL = avatars.getInitials(name)
             }
         }
@@ -500,6 +493,19 @@ export async function updateProfile(userId, name, username, bio, file, image, cu
             await deleteFile(currImage)
         }
         return updatedPost;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const fetchAccount = async (accountString) => {
+    try {
+        console.log("Hit")
+        const response = await databases.listDocuments(config.databaseId, config.usersCollection, [Query.select(['name', 'username', 'profileimageurl', 'accountid']), Query.or([
+            Query.startsWith('username', accountString),
+            Query.endsWith('username', accountString)
+        ])])
+        return response.documents;
     } catch (error) {
         console.log(error)
     }

@@ -39,10 +39,12 @@ function PostForm({ post, mode, method }) {
           postId: post.$id,
           imageId: post.imageId,
         });
+        console.log("UPDAASD  ")
         if (!updatePost) {
           throw Error("Cannot update post");
         }
         showToast("success", "Updated post successfully");
+        console.log("JJJJJJJJJJJJJJJJJJj")
         return navigate(`/posts/${post.$id}`);
       }
     } catch (error) {
@@ -52,9 +54,9 @@ function PostForm({ post, mode, method }) {
   }
   return (
     <FormProvider {...methods}>
-      <form className="h-96" onSubmit={methods.handleSubmit(formSubmit)}>
+      <form className="mb-20" onSubmit={methods.handleSubmit(formSubmit)}>
         <Box>
-          <Typography className="py-5" variant="h4" gutterBottom>
+          <Typography variant="h4" className="pb-3" gutterBottom>
             {mode} Post
             <Divider />
           </Typography>

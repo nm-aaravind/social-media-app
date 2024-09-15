@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { getUser } from "../lib/appwrite/apis"
 import { useNavigate } from "react-router-dom"
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const UserContext = createContext(null)
@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
         }
       }
     const [isAuthenticated, setIsAuthenticated] = React.useState(false)
-    const [isLoading, setIsLoading] = React.useState(false)
+    const [isAuthenticating, setIsAuthenticating] = React.useState(false)
     const updateContext = (updatedProfile) => {
         userDetails.imageUrl = updatedProfile.profileimageurl
         userDetails.name = updatedProfile.name
@@ -46,7 +46,8 @@ export const UserProvider = ({ children }) => {
                     email: currentUser.email,
                     imageUrl: currentUser.profileimageurl,
                     bio: currentUser.bio,
-                    $id: currentUser.$id
+                    $id: currentUser.$id,
+                    accountid: currentUser.accountid
                 })
                 setIsAuthenticated(true);
                 return true;
@@ -63,7 +64,7 @@ export const UserProvider = ({ children }) => {
         }
     }, [])
     return (
-        <UserContext.Provider value={{ userDetails, showToast,setUserDetails, checkAuth, isAuthenticated, setIsAuthenticated, isLoading, setIsLoading, updateContext }}>
+        <UserContext.Provider value={{ userDetails, showToast,setUserDetails, checkAuth, isAuthenticated, setIsAuthenticated, isAuthenticating, setIsAuthenticating, updateContext }}>
             {children}
         </UserContext.Provider>
     )

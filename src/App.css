@@ -7,51 +7,9 @@
     --primary-light: #6a1b9a77;
     --light: #f5f5f5;
 }
-.Toastify__toast-container {
-    background-color: yello;
-}
-.dropdown{
-    min-width: 200px;
-    position: absolute;
-    z-index: 100;
-    top:7rem;
-    right: min(6rem, 70px);
-    background-color: rgb(219, 181, 255);
-    border-radius: 10px 10px 10px 10px;
-    overflow: hidden;
-    transition: 150ms ease;
-}
-.scrollbar-invisible::-webkit-scrollbar {
-    display: none;
-  }
-  
-.scrollbar-invisible {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  
-.noSelect {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.dropdown.open{
-    visibility: visible;
-    /* opacity: 1; */
-    transform: translateY(0);
-}
-.dropdown.closed{
-    visibility: hidden;
-    transform: translateY(-30px);
-    opacity: 0;
-}
-.bottom-active{
-    background-color: '#fff';
+body{
+    height: 100vh;
+    background-color: var(--light);
 }
 .hover-css > div{
     opacity: 0;

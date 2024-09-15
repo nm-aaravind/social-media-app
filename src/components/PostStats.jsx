@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Favorite,
   ChatBubbleOutlineOutlined,
-  ChatBubble,
   BookmarkAddOutlined,
   BookmarkRemove,
   FavoriteBorder,
@@ -23,7 +22,7 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
   const { mutate: removeSave, isPending: removeSavePending } =
     useRemoveSavedPost();
   const { data: user } = useGetUser();
-  const saveState = user?.save.find((element) => element.post.$id === post.$id);
+  const saveState = user?.save.find((element) => element.post?.$id === post?.$id);
   const [likes, setLikes] = useState(likesList);
   const [isSaved, setIsSaved] = useState(false);
   async function toggleLike(event) {
@@ -35,7 +34,7 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
       newLikes.push(userId);
     }
     setLikes(newLikes);
-    likePost({ postId: post.$id, likeArray: newLikes });
+    likePost({ postId: post?.$id, likeArray: newLikes });
   }
 
   useEffect(() => {
@@ -49,14 +48,14 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
       setIsSaved(false);
     } else {
       setIsSaved(true);
-      await savePost({ postId: post.$id, userId });
+      await savePost({ postId: post?.$id, userId });
     }
   }
   return (
     <Box
-      className={`flex flex-col overflow-hidden text-ellipsis px-5 pt-3 ${
+      className={`flex flex-col overflow-hidden text-ellipsis px-5 pt-3 mix-blend-difference ${
         forGrid ? "sm:h-[5.5rem] md:h-[6.55rem]" : "md:h-auto"
-      } md:border-t md:border-white/90`}
+      }`}
     >
       <div className="flex gap-6 text-white sm:text-2xl md:text-3xl">
         <button className="" onClick={toggleLike}>
@@ -93,7 +92,7 @@ function PostStats({ post, userId, forGrid, setIsCommentsOpen }) {
       </p>
       {!forGrid && (
         <span
-          className="text-white/70 bg-transparent lg:text-md sm:-mt-4 sm:mb-3 
+          className="text-white/70 bg-transparent lg:text-md sm:mb-3 
                 md:mt-1 font-varela"
         >
           {multiFormatDateString(post.$createdAt)}

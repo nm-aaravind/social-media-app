@@ -4,38 +4,38 @@ import { Box } from '@mui/material';
 import { AddOutlined, BookmarkOutlined, HomeOutlined, SearchOutlined } from '@mui/icons-material';
 function Bottombar() {
   return (
-    <Box bgcolor='primary.light' className='w-full drop-shadow-3xl-inverted h-[4.5rem] fixed bottom-0 flex justify-between sm:text-3xl md:text-5xl'>
+    <Box bgcolor='primary.light' className='md:hidden  w-full fixed bottom-0 z-50 flex justify-between sm:text-3xl md:text-5xl'>
       <NavLink
         to="/"
-        className={({ isActive, isPending }) =>
-          isActive ? "text-white w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444]"
+        className={({ isActive }) =>
+          isActive ? "text-primary p-3 bottom-active w-full flex items-center bg-primary-light" : "text-white p-3 w-full bg-primary flex items-center hover:bg-primary-light transition-colors hover:text-primary"
         }
       >
-        <HomeOutlined fontSize='inherit' className='m-auto' />
+        <HomeOutlined fontSize='medium' className='m-auto' />
       </NavLink>
       <NavLink
         to="/explore"
         className={({ isActive, isPending }) =>
-          isActive ? "text-white bottom-active w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444] transition-colors"
+          isActive ? "text-primary p-3 bottom-active w-full flex items-center bg-primary-light" : "text-white w-full bg-primary flex items-center hover:bg-primary-light transition-colors hover:text-primary"
         }
       >
-        <SearchOutlined fontSize='inherit' className='text-inherit m-auto' />
+        <SearchOutlined fontSize='medium' className='text-inherit m-auto' />
       </NavLink>
       <NavLink
         to="/create-post"
         className={({ isActive, isPending }) =>
-          isActive ? "text-white bottom-active w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444]"
+          isActive ? "text-primary p-3 bottom-active w-full flex items-center bg-primary-light" : "text-white w-full bg-primary flex items-center hover:bg-primary-light transition-colors hover:text-primary"
         }
       >
-        <AddOutlined fontSize='inherit' className='text-inherit m-auto' />
+        <AddOutlined fontSize='medium' className='text-inherit m-auto' />
       </NavLink>
       <NavLink
         to="/saved"
-        className={({ isActive, isPending }) =>
-          isPending ? "pending" : isActive ? "text-white bottom-active w-full flex items-center bg-[#444]" : "text-[#ebe8e877] w-full flex items-center hover:bg-[#444]"
+        className={({ isActive }) =>
+          isActive ? "text-primary p-3 bottom-active w-full flex items-center bg-primary-light" : "text-white w-full bg-primary flex items-center hover:bg-primary-light transition-colors hover:text-primary"
         }
       >
-        <BookmarkOutlined fontSize='inherit' className='text-inherit m-auto' />
+        <BookmarkOutlined fontSize='medium' className='text-inherit m-auto' />
       </NavLink>
     </Box>
   )

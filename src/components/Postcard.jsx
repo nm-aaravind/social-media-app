@@ -85,21 +85,21 @@ function Postcard({ post, saves, user }) {
         {user?.accountid === post.user?.accountid && (
           <div className="absolute top-6 right-10 z-50">
             <Dropdown
-            content={[
-              {
-                value: "Update Post",
-                action: navigate,
-                arg: `update-post/${post.$id}`,
-              },
-              {
-                value: "Delete",
-                action: deletePost,
-                arg: { postId: post.$id, imageId: post.imageId },
-              },
-            ]}
-          >
-            <MoreVertSharp fontSize="medium" color="primary" />
-          </Dropdown>
+              content={[
+                {
+                  value: "Update Post",
+                  action: navigate,
+                  arg: `update-post/${post.$id}`,
+                },
+                {
+                  value: "Delete",
+                  action: deletePost,
+                  arg: { postId: post.$id, imageId: post.imageId },
+                },
+              ]}
+            >
+              <MoreVertSharp fontSize="medium" color="primary" />
+            </Dropdown>
           </div>
         )}
       </Box>
@@ -116,6 +116,7 @@ function Postcard({ post, saves, user }) {
           },
         }}
       >
+        <Link to={`/posts/${post.$id}`}>
         <img
           src={post.image}
           alt="post"
@@ -125,6 +126,7 @@ function Postcard({ post, saves, user }) {
             objectFit: "cover",
           }}
         />
+        </Link>
       </Box>
       <PostStats
         setIsCommentsOpen={setIsCommentsOpen}

@@ -42,14 +42,14 @@ const ProfileCard = ({
   }
   return (
     <Box
-      className={`rounded-md border ${JSON.stringify(currentUser) != JSON.stringify(userToDisplay) ? "mt-32" : "-mt-16"} border-[#6a1b9a66]`}
+      className="rounded-md border border-[#6a1b9a66] m-auto"
       bgcolor="white"
       width="100%"
     >
       <div className="flex flex-col flex-wrap sm:p-5 md:p-10 sm:gap-2 md:gap-10 w-full">
-        <div className="flex gap-16 sm:flex-wrap sm:justify-center sm:gap-2 md:justify-normal md:gap-12">
+        <div className="flex gap-16 sm:justify-start sm:gap-5 md:justify-normal md:gap-12">
           <img
-            className="lg:w-40 md:w-36 sm:w-24 rounded-full"
+            className="sm:w-24 sm:h-24 md:h-32 md:w-32 lg:w-40 lg:h-40 rounded-full"
             src={userToDisplay?.profileimageurl}
           ></img>
           <div className="">
@@ -57,22 +57,22 @@ const ProfileCard = ({
               color="secondary"
               variant="p"
               component="p"
-              className="sm:text-center md:text-left font-varela sm:text-4xl md:text-5xl"
+              className="text-left font-varela sm:text-3xl md:text-5xl"
             >
               {userToDisplay.name}
             </Typography>
             <Typography
-              className="sm:text-center md:text-left font-varela sm:text-3xl md:text-4xl"
+              className="text-left font-varela sm:text-xl md:text-4xl"
               variant="p"
               component="p"
               color="secondary"
             >
               @{userToDisplay.username}
             </Typography>
-            <div className="flex gap-10 mt-4">
+            <div className="flex sm:gap-3 md:gap-8 md:mt-4">
               <Link to={"followers"} className="p-1">
                 <Typography
-                  className="sm:text-center md:text-left font-varela sm:text-xl md:text-2xl"
+                  className="sm:text-center md:text-left font-varela sm:text-lg md:text-2xl"
                   variant="p"
                   component="p"
                   color="secondary"
@@ -82,7 +82,7 @@ const ProfileCard = ({
               </Link>
               <Link to={"followers"} className="p-1">
               <Typography
-                  className="sm:text-center md:text-left font-varela sm:text-xl md:text-2xl"
+                  className="sm:text-center md:text-left font-varela sm:text-lg md:text-2xl"
                   variant="p"
                   component="p"
                   color="secondary"

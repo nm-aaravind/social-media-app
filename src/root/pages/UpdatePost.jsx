@@ -19,7 +19,7 @@ function UpdatePost() {
     />
   ) : (
     <Box className="flex flex-col w-full items-center">
-      <Box className="sm:w-full lg:w-[min(80%,1200px)] -mt-36">
+      <Box className="sm:w-full xl:w-[75%] sm:px-10 md:px-5">
         <PostForm mode="Update" post={post} method={updatePost} />
       </Box>
     </Box>

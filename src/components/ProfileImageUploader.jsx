@@ -9,7 +9,6 @@ function ProfileImageUploader({ name, mode, image, setImage, user_name }) {
   const file = watch(name);
   const onDrop = useCallback(
     (acceptedFiles) => {
-      console.log(acceptedFiles);
       if (acceptedFiles?.length) {
         setValue(name, acceptedFiles);
         setImage(URL.createObjectURL(acceptedFiles[0]));

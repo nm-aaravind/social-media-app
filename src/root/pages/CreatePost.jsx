@@ -11,8 +11,8 @@ function CreatePost() {
   return isCreating ? (
     <Loader message="Creating your post" />
   ) : (
-    <Box className="flex flex-col w-full items-center h-full -mt-32">
-      <Box className="sm:w-full lg:w-[min(80%,1200px)]">
+    <Box className="flex flex-col w-full items-center h-full">
+      <Box className="sm:w-full xl:w-[75%] sm:px-10 md:px-5">
         <PostForm mode="Create" method={createPost} />
       </Box>
     </Box>

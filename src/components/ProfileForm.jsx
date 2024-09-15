@@ -1,7 +1,15 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { Paper, Typography, Button, TextField, Box, Grid, Divider } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  Button,
+  TextField,
+  Box,
+  Grid,
+  Divider,
+} from "@mui/material";
 import { useUpdateProfile } from "../lib/react-query/queries";
 import ProfileImageUploader from "./ProfileImageUploader";
 import UserContext from "../context/userContext";
@@ -46,7 +54,7 @@ const ProfileForm = ({ user }) => {
   ) : (
     <FormProvider {...methods}>
       <Box
-        className="sm:w-full md:w-3/5 sm:mt-28 md:mt-2 m-auto"
+        className="sm:w-full md:w-3/5 m-auto"
         component="form"
         onSubmit={methods.handleSubmit(formSubmit)}
       >
@@ -57,15 +65,15 @@ const ProfileForm = ({ user }) => {
           >
             Edit Profile
           </Typography>
-            <Divider className="col-start-1 col-end-3" />
+          <Divider className="col-start-1 col-end-3" />
           <div className="col-start-1 col-end-3">
-          <ProfileImageUploader
-            name="file"
-            image={image}
-            setImage={setImage}
-            user_name={user.name}
-            currImage={user.profileimageid}
-          />
+            <ProfileImageUploader
+              name="file"
+              image={image}
+              setImage={setImage}
+              user_name={user.name}
+              currImage={user.profileimageid}
+            />
           </div>
           <TextField
             {...methods.register("name", {

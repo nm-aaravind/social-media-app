@@ -9,21 +9,19 @@ import {
 import { useForm } from "react-hook-form";
 import { useCreateUser, useSignIn } from "../../lib/react-query/queries";
 import UserContext from "../../context/userContext";
+import { SettingsInputAntennaSharp } from "@mui/icons-material";
 
 function SignUpForm() {
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
-  const { mutateAsync: signup, isPending: isCreatingUser, data, isError, error } = useCreateUser();
+  const { mutateAsync: signup, isPending: isCreatingUser, error } = useCreateUser();
   const { mutateAsync: signin } = useSignIn();
-  const { checkAuth, showToast } = useContext(UserContext);
+  const { checkAuth, showToast, setIsAuthenticating } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function formSubmit(data) {
     try {
       const newUser = await signup(data);
-      if (!newUser) {
-        throw Error("Cannot sign up");
-      }
       const session = await signin({
         email: newUser.email,
         password: data.password,
@@ -34,15 +32,13 @@ function SignUpForm() {
       }
       if (checkAuth()) {
         reset();
+        setIsAuthenticating(false)
         showToast("success", "Signed up successfully!");
         navigate("/");
       }
     } catch (error) {
-      if (error.type == 'general_argument_invalid'){
-        showToast('error', 'Password should be between 8 to 256 characters')
-      }
-      console.log(error);
-      throw error;
+      setIsAuthenticating(false)
+      showToast("error",error.message)
     }
   }
 
@@ -177,6 +173,10 @@ function SignUpForm() {
                     value: true,
                     message: "Password is required",
                   },
+                  minLength: {
+                    value: 8,
+                    message: "Password length should be minimum of 8 characters"
+                  }
                 })}
                 name="password"
                 autoComplete="off"
@@ -202,7 +202,7 @@ function SignUpForm() {
                 sx={{ marginTop: "1.5rem", padding: "10px 0" }}
                 type="submit"
               >
-                Sign Up
+                {isCreatingUser ? "Signing up" : "Sign Up"}
               </Button>
 
               <Typography

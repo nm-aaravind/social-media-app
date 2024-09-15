@@ -24,14 +24,7 @@ const Listbox = styled("ul")(
 );
 
 const Comment = ({ comment }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleDropDown = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleDropDownClose = () => {
-    setAnchorEl(null);
-  };
+
   const { mutateAsync: deleteComment, isPending: isDeletingComment } =
     useDeleteComment();
   if (isDeletingComment) {
@@ -40,82 +33,37 @@ const Comment = ({ comment }) => {
     );
   }
   return (
-    <div className="w-full flex sm:p-4 md:p-6 gap-3 ">
+    <div className="w-full flex sm:p-2 md:p-4 gap-2 font-varela relative">
       <img
         src={comment.user?.profileimageurl}
-        className="sm:w-20 md:w-24"
+        className="sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full"
       ></img>
-      <div className="flex flex-col w-full md:gap-1">
-        <div className="flex justify-between w-full items-center -mt-1 text-ellipsis whitespace-nowrap overflow-hidden">
+      <div className="flex flex-col w-full md:gap-1 max-w-full" >
+        <div className="flex justify-between">
           <Typography
-            fontFamily={"Varela Round"}
             variant="p"
             component="p"
-            className="sm:text-lg md:text-2xl"
+            className="text-md font-light"
             color="secondary"
           >
             {comment.user?.username}
           </Typography>
           <Typography
-            fontFamily={"Varela Round"}
             variant="p"
             component="p"
-            className="sm:text-md md:text-lg"
+            className="sm:text-sm md:text-sm font-light"
             color="secondary"
           >
             {multiFormatDateString(comment.$createdAt)}
           </Typography>
         </div>
         <Divider className="bg-white/30" />
-        <div className="flex justify-between">
-          <Typography
-            fontFamily={"Varela Round"}
-            variant="p"
-            component="p"
-            className="sm:text-lg md:text-xl"
-            color="secondary"
+        <div className="flex flex-wrap justify-between w-full">
+          <p
+            className="sm:text-md md:text-lg text-wrap max-w-lg text-black w-full"
           >
             {comment.content}
-          </Typography>
-          <button
-            onClick={handleDropDown}
-            className="text-white hover:bg-[#404040] rounded-full w-9 h-9 mt-1"
-          >
-            <MoreVert />
-          </button>
-          <Menu
-            PaperProps={{
-              style: {
-                backgroundColor: "#232323", // Set your desired grey background color here
-                marginTop: "1.2rem",
-                border: "3px solid #ebebeb33",
-                color: "#ebebeb",
-                borderRadius: "0px",
-                minWidth: "100px",
-                boxShadow: "0px 10px 5px rgba(0,0,0,0.6)",
-                // Set your desired margin value here
-              },
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleDropDownClose}
-            slots={{ listbox: Listbox }}
-          >
-            <MenuItem
-              onClick={() => {
-                handleDropDownClose();
-                deleteComment({ commentId: comment.$id });
-              }}
-              sx={{
-                "&:hover": { backgroundColor: "#333" },
-                fontSize: "1.2rem",
-                color: "#f73123",
-                height: "3.5rem",
-              }}
-            >
-              <p className="text-center w-full">Delete Comment</p>
-            </MenuItem>
-          </Menu>
+          </p>
         </div>
       </div>
     </div>

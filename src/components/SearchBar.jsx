@@ -1,55 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Paper, TextField } from "@mui/material";
-import { Comment, SearchOutlined } from "@mui/icons-material";
-function SearchBar({ search, setSearch, use, addComment }) {
-  const handleChange = (event) => {
-    setSearch(event.target.value);
+import { SearchOutlined } from "@mui/icons-material";
+import { fetchAccount } from "../lib/appwrite/apis";
+import { Link } from "react-router-dom";
+import _ from "lodash";
+function SearchBar() {
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const fetchAccounts = async () => {
+    try {
+      const result = await fetchAccount(search);
+      setSearchResults(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const debouncedFetch = _.debounce(fetchAccounts, 500);
+
+  useEffect(() => {
+    if (search.length > 0) {
+      debouncedFetch();
+    } else {
+      setSearchResults([]);
+    }
+  }, [search]);
   return (
-    <Paper
-      className={`${
-        use == "comments" ? "h-20" : "h-16"
-      } overflow-hidden flex items-center drop-shadow-form`}
-      square
-      sx={{
-        backgroundColor: "primary.light",
-        ":focus-within": {
-          border: "1px solid #ebe8e888",
-        },
-        border: "1px solid #fff2",
-      }}
-    >
+    <Paper className={`flex items-center relative font-varela rounded-b-none mb-4`}>
       {
-        use!=='comments' && <SearchOutlined
+        <SearchOutlined
+          className="text-primary-light"
           sx={{
-            color: "#ebe8e877",
             position: "absolute",
-            translate: "15px -2px",
-            width: "2.3rem",
-            height: "2.3rem",
+            right: "1rem",
+            width: "2rem",
+            height: "2rem",
           }}
         />
       }
       <TextField
         value={search}
-        onChange={handleChange}
-        placeholder= {`${use=='comments' ? "Add a comment" : "Search"}`}
-        name="location"
-        id="location"
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search people"
+        name="search"
+        id="search"
+        color="secondary"
         variant="outlined"
         fullWidth
-        InputProps={{
-          sx: {
-            fontSize: 26,
-            borderRadius: 0,
-            color: "white",
-            paddingX: use=='comments' ? "0rem" : "3rem",
-          },
-        }}
       />
-      {
-        use == 'comments' && <buttton onClick={() => addComment()} className="absolute right-6 cursor-pointer hover:text-white text-white/50"><Comment fontSize='large' /></buttton>
-      }
+      <div className={`${searchResults.length > 0 ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"} transition-all list-none w-full absolute rounded rounded-t-none bg-white top-14  border-t-0 z-50`}>
+          {searchResults.map((result) => (
+            <Link to={`/profile/${result.accountid}`}>
+              <li className="flex gap-5 w-full cursor-pointer hover:bg-gray-300 transition-all p-3">
+                <img
+                  src={result.profileimageurl}
+                  className="w-10 h-10 rounded-full"
+                ></img>
+                <p className="flex flex-col text-sm">
+                  <span>{result.name}</span>
+                  <span>{result.username}</span>
+                </p>
+              </li>
+            </Link>
+          ))}
+        </div>
     </Paper>
   );
 }

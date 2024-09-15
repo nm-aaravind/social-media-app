@@ -7,19 +7,15 @@ import Dropdown from './Dropdown';
 import Loader from './Loader';
 
 function Navbar() {
-  console.log("HEy av")
-  const { data: user } = useGetUser();
   const { mutate: signOut, isPending: isSigningOut, isSuccess, isError } = useSignOut();
   const navigate = useNavigate();
-  const { isAuthenticated, showToast } = useContext(UserContext)
-
-  useEffect(() => {
+  const { isAuthenticated, showToast, userDetails: user } = useContext(UserContext)
+  useEffect(() => { 
     if (isSuccess) {
-      showToast('success', "Signed out!");
       navigate(0);
     }
     if (isError) {
-      showToast("error", "Error signing out");
+      throw Error("Cannot sign out")
     }
   }, [isSuccess, isError]);
 
@@ -33,8 +29,8 @@ function Navbar() {
     return <Loader message={"Signing out"}/>
   }
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: '#6a1b9a' }} className="shadow-md h-24">
-      <Box className="flex justify-between items-center p-4 mx-auto w-full max-w-screen-lg h-full">
+    <AppBar position="fixed" className="h-20">
+      <Box className="flex justify-between items-center p-4 mx-auto w-full max-w-screen-xl h-full">
         <Typography variant="h4" component="h1" color="whitesmoke" className="font-varela">
           <Link to="/">Heyo</Link>
         </Typography>
@@ -52,9 +48,9 @@ function Navbar() {
           }
         ]}>
           <img
-              src={user?.profileimageurl}
+              src={user?.imageUrl}
               alt="profile"
-              className="w-12 h-12 rounded-full transition-transform"
+              className="w-12 h-12 mt-1 rounded-full transition-transform"
             />
         </Dropdown>
         }

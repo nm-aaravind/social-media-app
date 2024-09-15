@@ -4,6 +4,9 @@ import { createAccount, signIn, signOut, getPostById ,createPost, getRecentPosts
 export const useCreateUser = () => {
     return useMutation({
         mutationFn: (user) => createAccount(user),
+        onError: (error) => {
+            throw error
+        }
     })
 }
 export const useSignIn = () => {
@@ -207,7 +210,7 @@ export const useGetPosts = () => {
         queryKey: ['getInfinitePosts'],
         queryFn: getInfinitePosts,
         getNextPageParam: (lastPage) => {
-            if(lastPage && lastPage.documents.length ===0 ) return null
+            if(lastPage && lastPage.documents.length === 0 ) return null
             const lastId = lastPage.documents[lastPage?.documents.length - 1].$id
             return lastId
         }

@@ -1,6 +1,6 @@
 import React from "react";
 import { useGetUser } from "../../lib/react-query/queries";
-import { Box } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import GridPostList from "../../components/GridPostList";
 import Loader from "../../components/Loader";
 function Saved() {
@@ -8,15 +8,14 @@ function Saved() {
   React.useEffect(() => {
     document.title = "Heyo | Saved Posts";
   }, []);
+  if (isPending) return <Loader />
   return (
-    <Box bgcolor="primary.main" className="w-full flex justify-center">
-      {isPending ? (
-        <Loader message="Fetching saved posts" />
-      ) : (
-        <div className="lg:w-[80%] sm:w-full md:px-6 sm:py-56 md:pt-64 bg-[#272727]">
+    <Box className="w-full flex justify-center">
+        <div className="lg:w-[80%] sm:w-full md:px-6">
+          <Typography variant="h4">Saved posts</Typography>
+          <Divider />
           <GridPostList posts={user.save} toDisplay="save" />
         </div>
-      )}
     </Box>
   );
 }

@@ -9,8 +9,8 @@ function SignInForm() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState, reset } = useForm();
   const { errors } = formState;
-  const { mutateAsync: signin } = useSignIn();
-  const { checkAuth, showToast } = useContext(UserContext);
+  const { mutateAsync: signin, isPending: isSigningIn } = useSignIn();
+  const { checkAuth, showToast, setIsAuthenticating } = useContext(UserContext);
 
   async function formSubmit(data) {
     try {
@@ -22,25 +22,18 @@ function SignInForm() {
         throw new Error("Cannot create session");
       }
       if (checkAuth()) {
+        setIsAuthenticating(false);
         showToast("success", "Signed in successfully");
         reset();
-        navigate('/')
+        navigate("/");
       }
     } catch (error) {
+      setIsAuthenticating(false);
       showToast("error", error.message);
     }
   }
   return (
-    <Box
-      sx={{
-        height: "100%",
-        display: "flex",
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f5f5f5",
-      }}
-    >
+    <Box className="flex w-full pt-32 items-center justify-center">
       <Box
         sx={{
           width: "clamp(350px,50%,800px)",
@@ -90,7 +83,9 @@ function SignInForm() {
               margin="normal"
             />
             {errors.email && (
-              <Typography sx={{ width: "100%", color: "red", textAlign: "left" }}>
+              <Typography
+                sx={{ width: "100%", color: "red", textAlign: "left" }}
+              >
                 {errors.email?.message}
               </Typography>
             )}
@@ -110,20 +105,29 @@ function SignInForm() {
               margin="normal"
             />
             {errors.password && (
-              <Typography sx={{ width: "100%", color: "red", textAlign: "left" }}>
+              <Typography
+                sx={{ width: "100%", color: "red", textAlign: "left" }}
+              >
                 {errors.password?.message}
               </Typography>
             )}
             <Button
+              disabled={isSigningIn}
               variant="contained"
               color="primary"
               fullWidth
               sx={{ marginTop: "1.5rem", padding: "10px 0" }}
               type="submit"
             >
-              Sign In
+              {isSigningIn ? "Signing In" : "Sign In"}
             </Button>
-            <Typography sx={{ marginTop: "1.3rem", textDecoration: "underline", textUnderlineOffset: "2px" }}>
+            <Typography
+              sx={{
+                marginTop: "1.3rem",
+                textDecoration: "underline",
+                textUnderlineOffset: "2px",
+              }}
+            >
               New user? <Link to={"/signup"}>Sign Up</Link>
             </Typography>
           </form>
